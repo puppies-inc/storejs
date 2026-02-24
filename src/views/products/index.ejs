@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+  </head>
+  <body>
+    <% if (notice) { %>
+      <p><%= notice %></p>
+    <% } %>
+
+    <h1>Products</h1>
+
+    <p><a href="/products/new">New product</a></p>
+
+    <% if (products.length === 0) { %>
+      <p>No products yet.</p>
+    <% } %>
+
+    <ul>
+      <% products.forEach(function(product) { %>
+        <li>
+          Name: <%= product.name %>
+          <a href="/products/<%= product.id %>">Show this product</a>
+        </li>
+      <% }) %>
+    </ul>
+  </body>
+</html>

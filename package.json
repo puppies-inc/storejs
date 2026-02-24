@@ -1,0 +1,19 @@
+{
+  "name": "storejs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.1",
+    "vitest": "^3.2.4"
+  }
+}

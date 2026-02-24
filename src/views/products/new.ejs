@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New product</title>
+  </head>
+  <body>
+    <h1>New product</h1>
+
+    <% if (errors && errors.length > 0) { %>
+      <ul>
+        <% errors.forEach(function(error) { %>
+          <li><%= error %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <form action="/products" method="post">
+      <p>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" value="<%= product.name %>" />
+      </p>
+      <p>
+        <button type="submit">Create Product</button>
+      </p>
+    </form>
+
+    <p><a href="/products">Back to products</a></p>
+  </body>
+</html>
