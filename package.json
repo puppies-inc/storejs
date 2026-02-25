@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "daytona:prepare": "bash scripts/daytona-prepare-sandbox.sh"
   },
   "dependencies": {
     "ejs": "^3.1.10",
