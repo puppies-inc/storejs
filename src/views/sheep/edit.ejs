@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>New product</title>
+    <title>Editing sheep</title>
   </head>
   <body>
-    <h1>New product</h1>
+    <h1>Editing sheep</h1>
 
     <% if (errors && errors.length > 0) { %>
       <ul>
@@ -16,16 +16,17 @@
       </ul>
     <% } %>
 
-    <form action="/products" method="post">
+    <form action="/sheep/<%= sheep.id %>" method="post">
       <p>
         <label for="name">Name</label>
-        <input id="name" name="name" type="text" value="<%= product.name %>" />
+        <input id="name" name="name" type="text" value="<%= sheep.name %>" />
       </p>
       <p>
-        <button type="submit">Create Product</button>
+        <button type="submit">Update Sheep</button>
       </p>
     </form>
 
-    <p><a href="/products">Back to products</a></p>
+    <p><a href="/sheep/<%= sheep.id %>">Show this sheep</a></p>
+    <p><a href="/sheep">Back to sheep</a></p>
   </body>
 </html>

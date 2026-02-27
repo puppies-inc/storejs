@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sheep <%= sheep.id %></title>
+  </head>
+  <body>
+    <% if (notice) { %>
+      <p><%= notice %></p>
+    <% } %>
+
+    <h1>Sheep</h1>
+    <p>Name: <%= sheep.name %></p>
+
+    <p><a href="/sheep/<%= sheep.id %>/edit">Edit this sheep</a></p>
+
+    <form action="/sheep/<%= sheep.id %>/delete" method="post">
+      <button type="submit">Delete this sheep</button>
+    </form>
+
+    <p><a href="/sheep">Back to sheep</a></p>
+  </body>
+</html>

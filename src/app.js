@@ -8,7 +8,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: false }));
 
-let products = [];
+let sheep = [];
 let nextId = 1;
 
 function setNotice(req, message) {
@@ -21,25 +21,25 @@ app.use((req, res, next) => {
   next();
 });
 
-function findProduct(id) {
-  return products.find((product) => product.id === id);
+function findSheep(id) {
+  return sheep.find((item) => item.id === id);
 }
 
 app.get('/', (req, res) => {
-  res.redirect('/products');
+  res.redirect('/sheep');
 });
 
-app.get('/products', (req, res) => {
-  res.render('products/index', { products });
+app.get('/sheep', (req, res) => {
+  res.render('sheep/index', { sheep });
 });
 
-app.get('/products/new', (req, res) => {
-  res.render('products/new', { product: { name: '' }, errors: [] });
+app.get('/sheep/new', (req, res) => {
+  res.render('sheep/new', { sheep: { name: '' }, errors: [] });
 });
 
-app.post('/products', (req, res) => {
+app.post('/sheep', (req, res) => {
   const now = new Date();
-  const product = {
+  const newSheep = {
     id: nextId,
     name: req.body.name || '',
     created_at: now,
@@ -47,44 +47,44 @@ app.post('/products', (req, res) => {
   };
 
   nextId += 1;
-  products.push(product);
+  sheep.push(newSheep);
 
-  setNotice(req, 'Product was successfully created.');
-  res.redirect(`/products/${product.id}`);
+  setNotice(req, 'Sheep was successfully created.');
+  res.redirect(`/sheep/${newSheep.id}`);
 });
 
-app.get('/products/:id', (req, res, next) => {
-  const product = findProduct(Number(req.params.id));
-  if (!product) return next();
-  res.render('products/show', { product });
+app.get('/sheep/:id', (req, res, next) => {
+  const sheepItem = findSheep(Number(req.params.id));
+  if (!sheepItem) return next();
+  res.render('sheep/show', { sheep: sheepItem });
 });
 
-app.get('/products/:id/edit', (req, res, next) => {
-  const product = findProduct(Number(req.params.id));
-  if (!product) return next();
-  res.render('products/edit', { product, errors: [] });
+app.get('/sheep/:id/edit', (req, res, next) => {
+  const sheepItem = findSheep(Number(req.params.id));
+  if (!sheepItem) return next();
+  res.render('sheep/edit', { sheep: sheepItem, errors: [] });
 });
 
-app.post('/products/:id', (req, res, next) => {
-  const product = findProduct(Number(req.params.id));
-  if (!product) return next();
+app.post('/sheep/:id', (req, res, next) => {
+  const sheepItem = findSheep(Number(req.params.id));
+  if (!sheepItem) return next();
 
-  product.name = req.body.name || '';
-  product.updated_at = new Date();
+  sheepItem.name = req.body.name || '';
+  sheepItem.updated_at = new Date();
 
-  setNotice(req, 'Product was successfully updated.');
-  res.redirect(`/products/${product.id}`);
+  setNotice(req, 'Sheep was successfully updated.');
+  res.redirect(`/sheep/${sheepItem.id}`);
 });
 
-app.post('/products/:id/delete', (req, res, next) => {
+app.post('/sheep/:id/delete', (req, res, next) => {
   const id = Number(req.params.id);
-  const product = findProduct(id);
-  if (!product) return next();
+  const sheepItem = findSheep(id);
+  if (!sheepItem) return next();
 
-  products = products.filter((item) => item.id !== id);
+  sheep = sheep.filter((item) => item.id !== id);
 
-  setNotice(req, 'Product was successfully deleted.');
-  res.redirect('/products');
+  setNotice(req, 'Sheep was successfully deleted.');
+  res.redirect('/sheep');
 });
 
 app.use((req, res) => {
@@ -92,7 +92,7 @@ app.use((req, res) => {
 });
 
 app.resetStore = () => {
-  products = [];
+  sheep = [];
   nextId = 1;
   app.locals.notice = null;
 };

@@ -2,13 +2,13 @@
 
 ## Goal
 
-Build a minimal demo web app in Node.js that shows a complete CRUD flow for a single entity: `Product`.
+Build a minimal demo web app in Node.js that shows a complete CRUD flow for a single entity: `Sheep`.
 
 The app should be intentionally simple, readable, and easy to demo.
 
-## Product Scope
+## Sheep Scope
 
-- Single domain entity: `Product`
+- Single domain entity: `Sheep`
 - Single user-facing attribute: `name`
 - No additional business entities
 
@@ -24,19 +24,19 @@ The app should be intentionally simple, readable, and easy to demo.
 
 ### 1. Routing
 
-- `GET /` shows product index (homepage must be product management entry point)
-- Standard product CRUD routes:
-  - `GET /products`
-  - `GET /products/new`
-  - `POST /products`
-  - `GET /products/:id`
-  - `GET /products/:id/edit`
-  - `POST /products/:id` (or `PATCH/PUT` if framework supports method override cleanly)
-  - `POST /products/:id/delete` (or `DELETE` with method override)
+- `GET /` shows sheep index (homepage must be sheep management entry point)
+- Standard sheep CRUD routes:
+  - `GET /sheep`
+  - `GET /sheep/new`
+  - `POST /sheep`
+  - `GET /sheep/:id`
+  - `GET /sheep/:id/edit`
+  - `POST /sheep/:id` (or `PATCH/PUT` if framework supports method override cleanly)
+  - `POST /sheep/:id/delete` (or `DELETE` with method override)
 
 ### 2. Data Model
 
-`Product` fields:
+`Sheep` fields:
 - `id` (primary key)
 - `name` (string)
 - timestamps if easy (`created_at`, `updated_at`)
@@ -47,46 +47,46 @@ Validation requirement:
 
 ### 3. HTML Pages
 
-#### Index (`/` and `/products`)
-- Heading: `Products`
-- List all products
-- For each product:
+#### Index (`/` and `/sheep`)
+- Heading: `Sheep`
+- List all sheep
+- For each sheep:
   - show `Name: <value>`
-  - show link to product detail page
-- Show `New product` action
+  - show link to sheep detail page
+- Show `New sheep` action
 
-#### New (`/products/new`)
-- Heading: `New product`
+#### New (`/sheep/new`)
+- Heading: `New sheep`
 - Form with:
   - label/input for `name`
   - submit action
-- Link back to products index
+- Link back to sheep index
 
-#### Show (`/products/:id`)
-- Display product name
+#### Show (`/sheep/:id`)
+- Display sheep name
 - Actions:
   - edit
   - delete
   - back to index
 
-#### Edit (`/products/:id/edit`)
-- Heading: `Editing product`
+#### Edit (`/sheep/:id/edit`)
+- Heading: `Editing sheep`
 - Same form fields as New
 - Links to show page and index
 
 ### 4. CRUD Behavior
 
 - Create:
-  - saves product
-  - redirects to product show page
+  - saves sheep
+  - redirects to sheep show page
   - displays success notice
 - Update:
-  - updates product
-  - redirects to product show page
+  - updates sheep
+  - redirects to sheep show page
   - displays success notice
 - Delete:
-  - removes product
-  - redirects to products index
+  - removes sheep
+  - redirects to sheep index
   - displays success notice
 
 ### 5. UI Guidelines
@@ -97,7 +97,7 @@ Validation requirement:
 
 ### 6. Error Handling
 
-- If a product id does not exist, return a normal 404 page/response.
+- If a sheep id does not exist, return a normal 404 page/response.
 - If form submission fails (if validations are introduced), re-render form with visible errors.
 
 ## Testing Requirements
@@ -105,17 +105,17 @@ Validation requirement:
 Implement basic automated tests for:
 - index page loads
 - new page loads
-- create increases product count and redirects correctly
+- create increases sheep count and redirects correctly
 - show page loads
 - edit page loads
 - update persists change and redirects correctly
-- delete decreases product count and redirects correctly
+- delete decreases sheep count and redirects correctly
 
 Keep tests fast and simple.
 
 ## Acceptance Criteria
 
-1. User can create, view, edit, and delete products via HTML pages.
-2. `/` resolves to products index.
+1. User can create, view, edit, and delete sheep via HTML pages.
+2. `/` resolves to sheep index.
 3. Success notices are shown after create/update/delete.
 4. UI remains intentionally minimal.
