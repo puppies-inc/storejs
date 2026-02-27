@@ -33,6 +33,10 @@ app.get('/products', (req, res) => {
   res.render('products/index', { products });
 });
 
+app.get('/about', (req, res) => {
+  res.render('about');
+});
+
 app.get('/products/new', (req, res) => {
   res.render('products/new', { product: { name: '' }, errors: [] });
 });
