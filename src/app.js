@@ -8,7 +8,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: false }));
 
-let products = [];
+let items = [];
 let nextId = 1;
 
 function setNotice(req, message) {
@@ -21,25 +21,25 @@ app.use((req, res, next) => {
   next();
 });
 
-function findProduct(id) {
-  return products.find((product) => product.id === id);
+function findItem(id) {
+  return items.find((item) => item.id === id);
 }
 
 app.get('/', (req, res) => {
-  res.redirect('/products');
+  res.redirect('/items');
 });
 
-app.get('/products', (req, res) => {
-  res.render('products/index', { products });
+app.get('/items', (req, res) => {
+  res.render('items/index', { items });
 });
 
-app.get('/products/new', (req, res) => {
-  res.render('products/new', { product: { name: '' }, errors: [] });
+app.get('/items/new', (req, res) => {
+  res.render('items/new', { item: { name: '' }, errors: [] });
 });
 
-app.post('/products', (req, res) => {
+app.post('/items', (req, res) => {
   const now = new Date();
-  const product = {
+  const item = {
     id: nextId,
     name: req.body.name || '',
     created_at: now,
@@ -47,44 +47,44 @@ app.post('/products', (req, res) => {
   };
 
   nextId += 1;
-  products.push(product);
+  items.push(item);
 
-  setNotice(req, 'Product was successfully created.');
-  res.redirect(`/products/${product.id}`);
+  setNotice(req, 'Item was successfully created.');
+  res.redirect(`/items/${item.id}`);
 });
 
-app.get('/products/:id', (req, res, next) => {
-  const product = findProduct(Number(req.params.id));
-  if (!product) return next();
-  res.render('products/show', { product });
+app.get('/items/:id', (req, res, next) => {
+  const item = findItem(Number(req.params.id));
+  if (!item) return next();
+  res.render('items/show', { item });
 });
 
-app.get('/products/:id/edit', (req, res, next) => {
-  const product = findProduct(Number(req.params.id));
-  if (!product) return next();
-  res.render('products/edit', { product, errors: [] });
+app.get('/items/:id/edit', (req, res, next) => {
+  const item = findItem(Number(req.params.id));
+  if (!item) return next();
+  res.render('items/edit', { item, errors: [] });
 });
 
-app.post('/products/:id', (req, res, next) => {
-  const product = findProduct(Number(req.params.id));
-  if (!product) return next();
+app.post('/items/:id', (req, res, next) => {
+  const item = findItem(Number(req.params.id));
+  if (!item) return next();
 
-  product.name = req.body.name || '';
-  product.updated_at = new Date();
+  item.name = req.body.name || '';
+  item.updated_at = new Date();
 
-  setNotice(req, 'Product was successfully updated.');
-  res.redirect(`/products/${product.id}`);
+  setNotice(req, 'Item was successfully updated.');
+  res.redirect(`/items/${item.id}`);
 });
 
-app.post('/products/:id/delete', (req, res, next) => {
+app.post('/items/:id/delete', (req, res, next) => {
   const id = Number(req.params.id);
-  const product = findProduct(id);
-  if (!product) return next();
+  const item = findItem(id);
+  if (!item) return next();
 
-  products = products.filter((item) => item.id !== id);
+  items = items.filter((item) => item.id !== id);
 
-  setNotice(req, 'Product was successfully deleted.');
-  res.redirect('/products');
+  setNotice(req, 'Item was successfully deleted.');
+  res.redirect('/items');
 });
 
 app.use((req, res) => {
@@ -92,7 +92,7 @@ app.use((req, res) => {
 });
 
 app.resetStore = () => {
-  products = [];
+  items = [];
   nextId = 1;
   app.locals.notice = null;
 };
