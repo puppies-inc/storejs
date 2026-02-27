@@ -1,6 +1,6 @@
 # storejs
 
-Minimal Node.js CRUD demo for `Product` using Express + EJS.
+Minimal Node.js CRUD demo for `Item` using Express + EJS.
 
 ## Local run
 

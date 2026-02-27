@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item <%= item.id %></title>
+  </head>
+  <body>
+    <% if (notice) { %>
+      <p><%= notice %></p>
+    <% } %>
+
+    <h1>Item</h1>
+    <p>Name: <%= item.name %></p>
+
+    <p><a href="/items/<%= item.id %>/edit">Edit this item</a></p>
+
+    <form action="/items/<%= item.id %>/delete" method="post">
+      <button type="submit">Delete this item</button>
+    </form>
+
+    <p><a href="/items">Back to items</a></p>
+  </body>
+</html>
