@@ -34,7 +34,7 @@ app.get('/products', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-  res.render('about');
+  res.status(500).send('Intentional test failure for Dash0 alert validation.');
 });
 
 app.get('/products/new', (req, res) => {
