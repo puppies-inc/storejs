@@ -18,6 +18,12 @@ describe('Product CRUD', () => {
     expect(response.headers.location).toBe('/products');
   });
 
+  it('about page loads', async () => {
+    const response = await request(app).get('/about');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('About StoreJS');
+  });
+
   it('new page loads', async () => {
     const response = await request(app).get('/products/new');
     expect(response.status).toBe(200);
