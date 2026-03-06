@@ -89,4 +89,10 @@ describe('Product CRUD', () => {
     const response = await request(app).get('/products/999');
     expect(response.status).toBe(404);
   });
+
+  it('about page loads', async () => {
+    const response = await request(app).get('/about');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('About StoreJS');
+  });
 });
