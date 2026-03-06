@@ -24,6 +24,12 @@ describe('Product CRUD', () => {
     expect(response.text).toContain('New product');
   });
 
+  it('about page loads', async () => {
+    const response = await request(app).get('/about');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('About');
+  });
+
   it('create increases product count and redirects correctly', async () => {
     const createResponse = await request(app)
       .post('/products')
