@@ -1,8 +1,43 @@
 services:
   - type: web
-    name: storejs
+    name: storejs-api
     env: node
     plan: free
+    rootDir: services/api
     buildCommand: npm install
     startCommand: npm start
-    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+  - type: web
+    name: storejs-web
+    env: node
+    plan: free
+    rootDir: services/web
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_URL
+        fromService:
+          type: web
+          name: storejs-api
+          property: hostPort
+  - type: worker
+    name: storejs-worker
+    env: node
+    plan: free
+    rootDir: services/worker
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_URL
+        fromService:
+          type: web
+          name: storejs-api
+          property: hostPort

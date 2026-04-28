@@ -2,9 +2,47 @@
 
 ## Goal
 
-Build a minimal demo web app in Node.js that shows a complete CRUD flow for a single entity: `Product`.
+Build a minimal demo web app in Node.js that shows a complete CRUD flow for a single entity: `Product`, structured as a 3-service monorepo.
 
-The app should be intentionally simple, readable, and easy to demo.
+## Architecture
+
+The app consists of three services:
+
+### 1. API Service (`services/api`)
+- Express.js REST API (JSON responses, no views)
+- In-memory data store
+- Endpoints:
+  - `GET /api/health` — health check
+  - `GET /api/products` — list all products
+  - `GET /api/products/:id` — get a single product
+  - `POST /api/products` — create a product
+  - `PUT /api/products/:id` — update a product
+  - `DELETE /api/products/:id` — delete a product
+- Default port: 3001
+
+### 2. Web Service (`services/web`)
+- Express.js + EJS server-rendered frontend
+- All data operations go through the API service (no local storage)
+- Configured via `API_URL` env var (default: `http://localhost:3001`)
+- Routes:
+  - `GET /health` — health check
+  - `GET /` — redirects to `/products`
+  - `GET /products` — product index
+  - `GET /products/new` — new product form
+  - `POST /products` — create product (proxied to API)
+  - `GET /products/:id` — show product
+  - `GET /products/:id/edit` — edit product form
+  - `POST /products/:id` — update product (proxied to API)
+  - `POST /products/:id/delete` — delete product (proxied to API)
+  - `GET /about` — about page
+- Default port: 3000
+
+### 3. Worker Service (`services/worker`)
+- Background Node.js process
+- Periodically fetches product count from the API (every 30 seconds)
+- Logs stats to stdout
+- Health check HTTP server on default port 3002
+- Configured via `API_URL` env var (default: `http://localhost:3001`)
 
 ## Product Scope
 
@@ -15,107 +53,38 @@ The app should be intentionally simple, readable, and easy to demo.
 ## Out of Scope
 
 - Authentication/authorization
-- Background jobs
+- Persistent database
 - Caching/search
-- External integrations
 - Complex architecture layers
 
-## Core Functional Requirements
-
-### 1. Routing
-
-- `GET /` shows product index (homepage must be product management entry point)
-- Standard product CRUD routes:
-  - `GET /products`
-  - `GET /products/new`
-  - `POST /products`
-  - `GET /products/:id`
-  - `GET /products/:id/edit`
-  - `POST /products/:id` (or `PATCH/PUT` if framework supports method override cleanly)
-  - `POST /products/:id/delete` (or `DELETE` with method override)
-
-### 2. Data Model
+## Data Model
 
 `Product` fields:
-- `id` (primary key)
+- `id` (primary key, auto-increment integer)
 - `name` (string)
-- timestamps if easy (`created_at`, `updated_at`)
-
-Validation requirement:
-- Keep it lightweight.
-- `name` may be optional for demo simplicity (acceptable to persist empty/missing name).
-
-### 3. HTML Pages
-
-#### Index (`/` and `/products`)
-- Heading: `Products`
-- List all products
-- For each product:
-  - show `Name: <value>`
-  - show link to product detail page
-- Show `New product` action
-
-#### New (`/products/new`)
-- Heading: `New product`
-- Form with:
-  - label/input for `name`
-  - submit action
-- Link back to products index
-
-#### Show (`/products/:id`)
-- Display product name
-- Actions:
-  - edit
-  - delete
-  - back to index
-
-#### Edit (`/products/:id/edit`)
-- Heading: `Editing product`
-- Same form fields as New
-- Links to show page and index
-
-### 4. CRUD Behavior
-
-- Create:
-  - saves product
-  - redirects to product show page
-  - displays success notice
-- Update:
-  - updates product
-  - redirects to product show page
-  - displays success notice
-- Delete:
-  - removes product
-  - redirects to products index
-  - displays success notice
-
-### 5. UI Guidelines
-
-- Keep UI plain and functional
-- No heavy custom styling
-- Actions/forms must be clearly visible
-
-### 6. Error Handling
-
-- If a product id does not exist, return a normal 404 page/response.
-- If form submission fails (if validations are introduced), re-render form with visible errors.
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
 
 ## Testing Requirements
 
-Implement basic automated tests for:
-- index page loads
-- new page loads
-- create increases product count and redirects correctly
-- show page loads
-- edit page loads
-- update persists change and redirects correctly
-- delete decreases product count and redirects correctly
+API service tests cover:
+- Health check endpoint
+- List products (empty)
+- Create product returns correct response
+- Create increases product count
+- Show product
+- Update persists change
+- Delete removes product
+- 404 for missing product
 
-Keep tests fast and simple.
+## Deployment
+
+Render Blueprint (`render.yaml`) defines all 3 services. Web and worker receive the API URL automatically via service linking.
 
 ## Acceptance Criteria
 
-1. User can create, view, edit, and delete products via HTML pages.
-2. `/` resolves to products index.
-3. Success notices are shown after create/update/delete.
-4. UI remains intentionally minimal.
+1. User can create, view, edit, and delete products via HTML pages (web service).
+2. All data operations go through the API service.
+3. Worker periodically reports product stats.
+4. Each service runs independently with `npm install && npm start`.
+5. API tests pass.
