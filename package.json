@@ -4,17 +4,13 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
-    "test": "vitest run",
+    "start:api": "cd services/api && npm start",
+    "start:web": "cd services/web && npm start",
+    "start:worker": "cd services/worker && npm start",
+    "dev:api": "cd services/api && npm run dev",
+    "dev:web": "cd services/web && npm run dev",
+    "install:all": "cd services/api && npm install && cd ../web && npm install && cd ../worker && npm install",
+    "test": "cd services/api && npm test",
     "daytona:prepare": "bash scripts/daytona-prepare-sandbox.sh"
-  },
-  "dependencies": {
-    "ejs": "^3.1.10",
-    "express": "^4.21.2"
-  },
-  "devDependencies": {
-    "supertest": "^7.1.1",
-    "vitest": "^3.2.4"
   }
 }
