@@ -12,7 +12,7 @@ function findProduct(id) {
 }
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'api', timestamp: new Date().toISOString() });
+  process.exit(1); res.json({ status: 'ok', service: 'api', timestamp: new Date().toISOString() });
 });
 
 app.get('/api/products', (req, res) => {
