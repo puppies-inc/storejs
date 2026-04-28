@@ -1,106 +1,112 @@
-# Staging services — auto-deploy on push, rootDir filtering
-services:
-  - type: web
-    name: storejs-api-staging
-    runtime: node
-    plan: free
-    region: oregon
-    rootDir: services/api
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /api/health
-    autoDeploy: true
-    envVars:
-      - key: NODE_ENV
-        value: production
+projects:
+  - name: storejs
+    environments:
+      # Staging — auto-deploy on push, rootDir filtering
+      - name: staging
+        services:
+          - type: web
+            name: storejs-api
+            runtime: node
+            plan: free
+            region: oregon
+            rootDir: services/api
+            buildCommand: npm install
+            startCommand: npm start
+            healthCheckPath: /api/health
+            autoDeploy: true
+            envVars:
+              - key: NODE_ENV
+                value: production
 
-  - type: web
-    name: storejs-web-staging
-    runtime: node
-    plan: free
-    region: oregon
-    rootDir: services/web
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /health
-    autoDeploy: true
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: API_URL
-        fromService:
-          type: web
-          name: storejs-api-staging
-          property: hostPort
+          - type: web
+            name: storejs-web
+            runtime: node
+            plan: free
+            region: oregon
+            rootDir: services/web
+            buildCommand: npm install
+            startCommand: npm start
+            healthCheckPath: /health
+            autoDeploy: true
+            envVars:
+              - key: NODE_ENV
+                value: production
+              - key: API_URL
+                fromService:
+                  type: web
+                  name: storejs-api
+                  property: hostport
 
-  - type: web
-    name: storejs-worker-staging
-    runtime: node
-    plan: free
-    region: oregon
-    rootDir: services/worker
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /health
-    autoDeploy: true
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: API_URL
-        fromService:
-          type: web
-          name: storejs-api-staging
-          property: hostPort
+          - type: web
+            name: storejs-worker
+            runtime: node
+            plan: free
+            region: oregon
+            rootDir: services/worker
+            buildCommand: npm install
+            startCommand: npm start
+            healthCheckPath: /health
+            autoDeploy: true
+            envVars:
+              - key: NODE_ENV
+                value: production
+              - key: API_URL
+                fromService:
+                  type: web
+                  name: storejs-api
+                  property: hostport
 
-  # Production services — deploy controlled by SuperPlane, auto-deploy OFF
-  - type: web
-    name: storejs-api-production
-    runtime: node
-    plan: free
-    region: oregon
-    rootDir: services/api
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /api/health
-    autoDeploy: false
-    envVars:
-      - key: NODE_ENV
-        value: production
+      # Production — deploy controlled externally, auto-deploy OFF
+      - name: production
+        services:
+          - type: web
+            name: storejs-api-prod
+            runtime: node
+            plan: free
+            region: oregon
+            rootDir: services/api
+            buildCommand: npm install
+            startCommand: npm start
+            healthCheckPath: /api/health
+            autoDeploy: false
+            envVars:
+              - key: NODE_ENV
+                value: production
 
-  - type: web
-    name: storejs-web-production
-    runtime: node
-    plan: free
-    region: oregon
-    rootDir: services/web
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /health
-    autoDeploy: false
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: API_URL
-        fromService:
-          type: web
-          name: storejs-api-production
-          property: hostPort
+          - type: web
+            name: storejs-web-prod
+            runtime: node
+            plan: free
+            region: oregon
+            rootDir: services/web
+            buildCommand: npm install
+            startCommand: npm start
+            healthCheckPath: /health
+            autoDeploy: false
+            envVars:
+              - key: NODE_ENV
+                value: production
+              - key: API_URL
+                fromService:
+                  type: web
+                  name: storejs-api-prod
+                  property: hostport
 
-  - type: web
-    name: storejs-worker-production
-    runtime: node
-    plan: free
-    region: oregon
-    rootDir: services/worker
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /health
-    autoDeploy: false
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: API_URL
-        fromService:
-          type: web
-          name: storejs-api-production
-          property: hostPort
+          - type: web
+            name: storejs-worker-prod
+            runtime: node
+            plan: free
+            region: oregon
+            rootDir: services/worker
+            buildCommand: npm install
+            startCommand: npm start
+            healthCheckPath: /health
+            autoDeploy: false
+            envVars:
+              - key: NODE_ENV
+                value: production
+              - key: API_URL
+                fromService:
+                  type: web
+                  name: storejs-api-prod
+                  property: hostport
