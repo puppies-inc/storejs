@@ -5,10 +5,5 @@
   "type": "commonjs",
   "scripts": {
     "start": "node src/worker.js"
-  },
-  "dependencies": {
-    "@opentelemetry/auto-instrumentations-node": "^0.73.0",
-    "@opentelemetry/exporter-metrics-otlp-proto": "^0.215.0",
-    "@opentelemetry/exporter-trace-otlp-proto": "^0.215.0"
   }
 }
