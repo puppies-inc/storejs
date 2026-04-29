@@ -26,18 +26,8 @@ app.get('/api/products/:id', (req, res) => {
 });
 
 app.post('/api/products', (req, res) => {
-  const now = new Date();
-  const product = {
-    id: nextId,
-    name: req.body.name || '',
-    created_at: now,
-    updated_at: now
-  };
-
-  nextId += 1;
-  products.push(product);
-
-  res.status(201).json(product);
+  // Intentional 500 for blue/green testing
+  res.status(500).json({ error: 'Internal server error: database connection failed' });
 });
 
 app.put('/api/products/:id', (req, res) => {
@@ -70,16 +60,3 @@ app.resetStore = () => {
 };
 
 module.exports = app;
-// batch1 test 1777377880
-// batch1 retry 1777378114
-// merge-test 1777380202
-// sequential-test 1777381056
-// webhook-test 1777383027
-// discord-notify-test 1777383656
-// blue-green test 1777397902
-// bluegreen-v3-test1 1777399769
-// bg-v3-retest 1777400060
-// test-fail 1777448824
-// dash0-verify-test 1777449432
-// dash0-full-test 1777450029
-// full-pipeline-test 1777451611
