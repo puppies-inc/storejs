@@ -26,8 +26,18 @@ app.get('/api/products/:id', (req, res) => {
 });
 
 app.post('/api/products', (req, res) => {
-  // Intentional 500 for blue/green testing
-  res.status(500).json({ error: 'Internal server error: database connection failed' });
+  const now = new Date();
+  const product = {
+    id: nextId,
+    name: req.body.name || '',
+    created_at: now,
+    updated_at: now
+  };
+
+  nextId += 1;
+  products.push(product);
+
+  res.status(201).json(product);
 });
 
 app.put('/api/products/:id', (req, res) => {
