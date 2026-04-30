@@ -58,13 +58,14 @@ test.describe('StoreJS Web Smoke Tests', () => {
     await expect(page.locator('body')).not.toContainText('Updated Smoke Widget');
   });
 
-  test('create product shows success notice', async ({ page }) => {
+  test('create product redirects to detail page', async ({ page }) => {
     await page.goto('/products/new');
     await page.fill('input[name="name"]', 'Notice Test Product');
     await page.click('button[type="submit"], input[type="submit"]');
 
-    // Check for success notice
-    await expect(page.locator('body')).toContainText(/successfully created/i);
+    // Should redirect to product detail page
+    await expect(page).toHaveURL(/\/products\/\d+/);
+    await expect(page.locator('body')).toContainText('Notice Test Product');
 
     // Cleanup - delete the product
     await page.click('button:has-text("Delete"), input[value="Delete"], form[action*="delete"] button, form[action*="delete"] input[type="submit"]');
