@@ -26,8 +26,18 @@ app.get('/api/products/:id', (req, res) => {
 });
 
 app.post('/api/products', (req, res) => {
-  // BUG: intentionally broken for canary test
-  throw new Error('Product creation is temporarily broken!');
+  const now = new Date();
+  const product = {
+    id: nextId,
+    name: req.body.name || '',
+    created_at: now,
+    updated_at: now
+  };
+
+  nextId += 1;
+  products.push(product);
+
+  res.status(201).json(product);
 });
 
 app.put('/api/products/:id', (req, res) => {
