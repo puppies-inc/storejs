@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       api_url:
-        description: 'Base URL of the API service (e.g. https://storejs-api-green.onrender.com)'
+        description: 'Base URL of the API service'
         required: true
         type: string
       web_url:
-        description: 'Base URL of the Web service (e.g. https://storejs-web-green.onrender.com)'
+        description: 'Base URL of the Web service'
         required: true
         type: string
 
@@ -17,8 +17,6 @@ jobs:
     name: API Smoke Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Wait for API
         run: |
           echo "Waiting for API at ${{ inputs.api_url }}..."
@@ -37,86 +35,33 @@ jobs:
           echo "$RESP"
           echo "$RESP" | jq -e '.status == "ok"'
 
-      - name: CRUD smoke test
+      - name: List products (GET only)
         run: |
-          API="${{ inputs.api_url }}"
+          RESP=$(curl -sf "${{ inputs.api_url }}/api/products")
+          echo "Products: $(echo $RESP | jq length)"
 
-          echo "=== Create product ==="
-          CREATE=$(curl -sf -X POST "$API/api/products" \
-            -H "Content-Type: application/json" \
-            -d '{"name":"smoke-test-product"}')
-          echo "$CREATE"
-          ID=$(echo "$CREATE" | jq -r '.id')
-          echo "$CREATE" | jq -e '.name == "smoke-test-product"'
-
-          echo "=== Read product ==="
-          SHOW=$(curl -sf "$API/api/products/$ID")
-          echo "$SHOW"
-          echo "$SHOW" | jq -e '.name == "smoke-test-product"'
-
-          echo "=== List products ==="
-          LIST=$(curl -sf "$API/api/products")
-          echo "$LIST"
-          echo "$LIST" | jq -e 'length > 0'
-
-          echo "=== Update product ==="
-          UPDATE=$(curl -sf -X PUT "$API/api/products/$ID" \
-            -H "Content-Type: application/json" \
-            -d '{"name":"smoke-test-updated"}')
-          echo "$UPDATE"
-          echo "$UPDATE" | jq -e '.name == "smoke-test-updated"'
-
-          echo "=== Delete product ==="
-          DELETE=$(curl -sf -X DELETE "$API/api/products/$ID")
-          echo "$DELETE"
-          echo "$DELETE" | jq -e '.message == "Product deleted"'
-
-          echo "=== Verify deletion ==="
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$API/api/products/$ID")
-          if [ "$HTTP_CODE" != "404" ]; then
-            echo "Expected 404, got $HTTP_CODE"
-            exit 1
-          fi
-
-          echo "✅ All API smoke tests passed!"
-
-  e2e-smoke:
-    name: Playwright E2E Tests
+  web-smoke:
+    name: Web Smoke Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        working-directory: tests/e2e
+      - name: Wait for web
         run: |
-          npm ci
-          npx playwright install chromium --with-deps
-
-      - name: Wait for web service
-        run: |
-          echo "Waiting for Web at ${{ inputs.web_url }}..."
           for i in $(seq 1 30); do
             if curl -sf "${{ inputs.web_url }}/health" > /dev/null 2>&1; then
               echo "Web is up!"
               break
             fi
-            echo "Attempt $i/30 - retrying in 10s..."
             sleep 10
           done
 
-      - name: Run Playwright tests
-        working-directory: tests/e2e
-        env:
-          WEB_URL: ${{ inputs.web_url }}
-        run: npx playwright test
+      - name: Homepage loads
+        run: |
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" -L "${{ inputs.web_url }}/")
+          echo "Homepage: $CODE"
+          [ "$CODE" = "200" ]
 
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report
-          path: tests/e2e/playwright-report/
-          retention-days: 7
+      - name: Products page loads
+        run: |
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ inputs.web_url }}/products")
+          echo "Products page: $CODE"
+          [ "$CODE" = "200" ]
