@@ -1,2 +1,1 @@
-// Feature: cart-redesign
 ée
