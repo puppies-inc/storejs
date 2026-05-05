@@ -32,3 +32,4 @@ server.listen(PORT, () => {
 // Run immediately, then on interval
 checkProducts();
 setInterval(checkProducts, INTERVAL);
+// Notification system 1777906194
