@@ -12,6 +12,7 @@ The app should be intentionally simple, readable, and easy to demo.
 - Single user-facing attribute: `name`
 - No additional business entities
 - Puppies maybe?
+- Another maybe puppy
 
 ## Out of Scope
 
