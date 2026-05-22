@@ -11,6 +11,7 @@ The app should be intentionally simple, readable, and easy to demo.
 - Single domain entity: `Product`
 - Single user-facing attribute: `name`
 - No additional business entities
+- Puppies maybe?
 
 ## Out of Scope
 
