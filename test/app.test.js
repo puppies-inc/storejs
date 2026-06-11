@@ -1,21 +1,21 @@
 const request = require('supertest');
 const app = require('../src/app');
 
-describe('Puppy CRUD', () => {
+describe('Cat CRUD', () => {
   beforeEach(() => {
     app.resetStore();
   });
 
   it('index page loads', async () => {
-    const response = await request(app).get('/puppies');
+    const response = await request(app).get('/cats');
     expect(response.status).toBe(200);
-    expect(response.text).toContain('Puppies');
+    expect(response.text).toContain('Cats');
   });
 
-  it('root redirects to puppies index', async () => {
+  it('root redirects to cats index', async () => {
     const response = await request(app).get('/');
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/puppies');
+    expect(response.headers.location).toBe('/cats');
   });
 
   it('about page loads', async () => {
@@ -25,74 +25,74 @@ describe('Puppy CRUD', () => {
   });
 
   it('new page loads', async () => {
-    const response = await request(app).get('/puppies/new');
+    const response = await request(app).get('/cats/new');
     expect(response.status).toBe(200);
-    expect(response.text).toContain('New puppy');
+    expect(response.text).toContain('New cat');
   });
 
-  it('create increases puppy count and redirects correctly', async () => {
+  it('create increases cat count and redirects correctly', async () => {
     const createResponse = await request(app)
-      .post('/puppies')
+      .post('/cats')
       .type('form')
-      .send({ name: 'Buddy' });
+      .send({ name: 'Whiskers' });
 
     expect(createResponse.status).toBe(302);
-    expect(createResponse.headers.location).toBe('/puppies/1');
+    expect(createResponse.headers.location).toBe('/cats/1');
 
-    const showResponse = await request(app).get('/puppies/1');
-    expect(showResponse.text).toContain('Puppy was successfully created.');
+    const showResponse = await request(app).get('/cats/1');
+    expect(showResponse.text).toContain('Cat was successfully created.');
 
-    const indexResponse = await request(app).get('/puppies');
-    expect(indexResponse.text).toContain('Name: Buddy');
+    const indexResponse = await request(app).get('/cats');
+    expect(indexResponse.text).toContain('Name: Whiskers');
   });
 
   it('show page loads', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Max' });
+    await request(app).post('/cats').type('form').send({ name: 'Mittens' });
 
-    const response = await request(app).get('/puppies/1');
+    const response = await request(app).get('/cats/1');
     expect(response.status).toBe(200);
-    expect(response.text).toContain('Name: Max');
+    expect(response.text).toContain('Name: Mittens');
   });
 
   it('edit page loads', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Luna' });
+    await request(app).post('/cats').type('form').send({ name: 'Luna' });
 
-    const response = await request(app).get('/puppies/1/edit');
+    const response = await request(app).get('/cats/1/edit');
     expect(response.status).toBe(200);
-    expect(response.text).toContain('Editing puppy');
+    expect(response.text).toContain('Editing cat');
   });
 
   it('update persists change and redirects correctly', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
+    await request(app).post('/cats').type('form').send({ name: 'Old Name' });
 
     const updateResponse = await request(app)
-      .post('/puppies/1')
+      .post('/cats/1')
       .type('form')
       .send({ name: 'New Name' });
 
     expect(updateResponse.status).toBe(302);
-    expect(updateResponse.headers.location).toBe('/puppies/1');
+    expect(updateResponse.headers.location).toBe('/cats/1');
 
-    const showResponse = await request(app).get('/puppies/1');
+    const showResponse = await request(app).get('/cats/1');
     expect(showResponse.text).toContain('Name: New Name');
-    expect(showResponse.text).toContain('Puppy was successfully updated.');
+    expect(showResponse.text).toContain('Cat was successfully updated.');
   });
 
-  it('delete decreases puppy count and redirects correctly', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'To Delete' });
+  it('delete decreases cat count and redirects correctly', async () => {
+    await request(app).post('/cats').type('form').send({ name: 'To Delete' });
 
-    const deleteResponse = await request(app).post('/puppies/1/delete');
+    const deleteResponse = await request(app).post('/cats/1/delete');
 
     expect(deleteResponse.status).toBe(302);
-    expect(deleteResponse.headers.location).toBe('/puppies');
+    expect(deleteResponse.headers.location).toBe('/cats');
 
-    const indexResponse = await request(app).get('/puppies');
+    const indexResponse = await request(app).get('/cats');
     expect(indexResponse.text).not.toContain('Name: To Delete');
-    expect(indexResponse.text).toContain('Puppy was successfully deleted.');
+    expect(indexResponse.text).toContain('Cat was successfully deleted.');
   });
 
-  it('returns 404 for missing puppy', async () => {
-    const response = await request(app).get('/puppies/999');
+  it('returns 404 for missing cat', async () => {
+    const response = await request(app).get('/cats/999');
     expect(response.status).toBe(404);
   });
 });

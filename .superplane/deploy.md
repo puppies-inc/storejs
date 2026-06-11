@@ -38,7 +38,7 @@ When a PR is opened against `storejs`, SuperPlane spins up a preview droplet and
 - **Canvas YAML:** [.superplane/preview-on-pr.yaml](preview-on-pr.yaml)
 - **Setup script:** `scripts/preview-setup.sh` (cloned from `main` on the droplet; checks out the PR branch via `PR_NUMBER`)
 
-Preview URL format: `http://<droplet-ip>/puppies`
+Preview URL format: `http://<droplet-ip>/cats`
 
 Recreate with:
 

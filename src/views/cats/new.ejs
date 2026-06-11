@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StoreJS — Editing puppy</title>
+    <title>StoreJS — New cat</title>
     <style>
       body { background: #0d1117; color: #c9d1d9; font-family: "Segoe UI", system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
       h1 { color: #f0883e; border-bottom: 1px solid #30363d; padding-bottom: 8px; }
@@ -31,10 +31,10 @@
   </head>
   <body>
     <div class="nav">
-      <a href="/puppies/<%= puppy.id %>" class="btn">← Back</a>
+      <a href="/cats" class="btn">← Cats</a>
     </div>
 
-    <h1>🐶 Editing puppy</h1>
+    <h1>🐱 New cat</h1>
 
     <% if (errors && errors.length > 0) { %>
       <div class="error">
@@ -44,13 +44,13 @@
       </div>
     <% } %>
 
-    <form action="/puppies/<%= puppy.id %>" method="post">
+    <form action="/cats" method="post">
       <p>
         <label for="name">Name</label>
-        <input id="name" name="name" type="text" value="<%= puppy.name %>" />
+        <input id="name" name="name" type="text" value="<%= cat.name %>" placeholder="Enter cat name..." />
       </p>
       <p>
-        <button type="submit">Update Puppy 🐾</button>
+        <button type="submit">Create Cat 🐾</button>
       </p>
     </form>
   </body>

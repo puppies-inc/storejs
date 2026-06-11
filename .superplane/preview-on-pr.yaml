@@ -74,11 +74,11 @@ spec:
         repository: storejs
         issueNumber: '{{ root().data.number }}'
         body: |
-          ## 🐶 Preview deployment
+          ## 🐱 Preview deployment
 
           Your preview environment is ready:
 
-          **URL:** http://{{ filter($["Create Preview Droplet"].data.networks.v4, .type == "public")[0].ip_address }}/puppies
+          **URL:** http://{{ filter($["Create Preview Droplet"].data.networks.v4, .type == "public")[0].ip_address }}/cats
 
           Deployed for PR #{{ root().data.number }}.
       position: { x: 2520, y: 100 }
