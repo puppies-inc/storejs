@@ -21,6 +21,7 @@ apt-get install -y nodejs nginx
 
 echo "=== Cloning repo ==="
 cd /opt
+rm -rf app
 for i in 1 2 3 4 5; do
   git clone https://github.com/puppies-inc/storejs.git app && break
   echo "Retry $i: git clone failed"
@@ -73,19 +74,21 @@ ln -sf /etc/nginx/sites-available/storejs /etc/nginx/sites-enabled/
 echo "=== Starting services ==="
 systemctl daemon-reload
 systemctl enable storejs nginx
-systemctl start storejs
+systemctl restart storejs
 sleep 2
 systemctl restart nginx
 
 echo "=== Health check ==="
 HTTP_STATUS=000
 for i in $(seq 1 30); do
-  HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/puppies || true)
-  [ "$HTTP_STATUS" = "200" ] && break
+  HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ || true)
+  if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "302" ]; then
+    break
+  fi
   sleep 2
 done
 
-if [ "$HTTP_STATUS" != "200" ]; then
+if [ "$HTTP_STATUS" != "200" ] && [ "$HTTP_STATUS" != "302" ]; then
   echo "Preview setup FAILED - health check returned HTTP $HTTP_STATUS"
   systemctl status storejs --no-pager -l || true
   journalctl -u storejs -n 40 --no-pager || true

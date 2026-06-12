@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const { puppiesCreated, puppiesDeleted, puppiesTotal } = require('./metrics');
+const { catsCreated, catsDeleted, catsTotal } = require('./metrics');
 
 const app = express();
 
@@ -9,7 +9,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: false }));
 
-let puppies = [];
+let cats = [];
 let nextId = 1;
 
 function setNotice(req, message) {
@@ -22,29 +22,29 @@ app.use((req, res, next) => {
   next();
 });
 
-function findPuppy(id) {
-  return puppies.find((puppy) => puppy.id === id);
+function findCat(id) {
+  return cats.find((cat) => cat.id === id);
 }
 
 app.get('/', (req, res) => {
-  res.redirect('/puppies');
+  res.redirect('/cats');
 });
 
-app.get('/puppies', (req, res) => {
-  res.render('puppies/index', { puppies });
+app.get('/cats', (req, res) => {
+  res.render('cats/index', { cats });
 });
 
 app.get('/about', (req, res) => {
   res.render('about');
 });
 
-app.get('/puppies/new', (req, res) => {
-  res.render('puppies/new', { puppy: { name: '' }, errors: [] });
+app.get('/cats/new', (req, res) => {
+  res.render('cats/new', { cat: { name: '' }, errors: [] });
 });
 
-app.post('/puppies', (req, res) => {
+app.post('/cats', (req, res) => {
   const now = new Date();
-  const puppy = {
+  const cat = {
     id: nextId,
     name: req.body.name || '',
     created_at: now,
@@ -52,48 +52,48 @@ app.post('/puppies', (req, res) => {
   };
 
   nextId += 1;
-  puppies.push(puppy);
-  puppiesCreated.add(1);
-  puppiesTotal.add(1);
+  cats.push(cat);
+  catsCreated.add(1);
+  catsTotal.add(1);
 
-  setNotice(req, 'Puppy was successfully created.');
-  res.redirect(`/puppies/${puppy.id}`);
+  setNotice(req, 'Cat was successfully created.');
+  res.redirect(`/cats/${cat.id}`);
 });
 
-app.get('/puppies/:id', (req, res, next) => {
-  const puppy = findPuppy(Number(req.params.id));
-  if (!puppy) return next();
-  res.render('puppies/show', { puppy });
+app.get('/cats/:id', (req, res, next) => {
+  const cat = findCat(Number(req.params.id));
+  if (!cat) return next();
+  res.render('cats/show', { cat });
 });
 
-app.get('/puppies/:id/edit', (req, res, next) => {
-  const puppy = findPuppy(Number(req.params.id));
-  if (!puppy) return next();
-  res.render('puppies/edit', { puppy, errors: [] });
+app.get('/cats/:id/edit', (req, res, next) => {
+  const cat = findCat(Number(req.params.id));
+  if (!cat) return next();
+  res.render('cats/edit', { cat, errors: [] });
 });
 
-app.post('/puppies/:id', (req, res, next) => {
-  const puppy = findPuppy(Number(req.params.id));
-  if (!puppy) return next();
+app.post('/cats/:id', (req, res, next) => {
+  const cat = findCat(Number(req.params.id));
+  if (!cat) return next();
 
-  puppy.name = req.body.name || '';
-  puppy.updated_at = new Date();
+  cat.name = req.body.name || '';
+  cat.updated_at = new Date();
 
-  setNotice(req, 'Puppy was successfully updated.');
-  res.redirect(`/puppies/${puppy.id}`);
+  setNotice(req, 'Cat was successfully updated.');
+  res.redirect(`/cats/${cat.id}`);
 });
 
-app.post('/puppies/:id/delete', (req, res, next) => {
+app.post('/cats/:id/delete', (req, res, next) => {
   const id = Number(req.params.id);
-  const puppy = findPuppy(id);
-  if (!puppy) return next();
+  const cat = findCat(id);
+  if (!cat) return next();
 
-  puppies = puppies.filter((item) => item.id !== id);
-  puppiesDeleted.add(1);
-  puppiesTotal.add(-1);
+  cats = cats.filter((item) => item.id !== id);
+  catsDeleted.add(1);
+  catsTotal.add(-1);
 
-  setNotice(req, 'Puppy was successfully deleted.');
-  res.redirect('/puppies');
+  setNotice(req, 'Cat was successfully deleted.');
+  res.redirect('/cats');
 });
 
 app.use((req, res) => {
@@ -101,7 +101,7 @@ app.use((req, res) => {
 });
 
 app.resetStore = () => {
-  puppies = [];
+  cats = [];
   nextId = 1;
   app.locals.notice = null;
 };

@@ -38,7 +38,7 @@ When a PR is opened against `storejs`, SuperPlane spins up a preview droplet and
 - **Canvas YAML:** [.superplane/preview-on-pr.yaml](preview-on-pr.yaml)
 - **Setup script:** `scripts/preview-setup.sh` (cloned from `main` on the droplet; checks out the PR branch via `PR_NUMBER`)
 
-Preview URL format: `http://<droplet-ip>/puppies`
+Preview URL format: `http://<droplet-ip>/cats`
 
 Recreate with:
 
@@ -52,6 +52,10 @@ Monitor a run:
 superplane events list --app-id 1b1c1566-ed6a-40fe-a210-1323e69d1bfd
 superplane executions list --app-id 1b1c1566-ed6a-40fe-a210-1323e69d1bfd --node-id setup-preview -o yaml
 ```
+
+The preview URL comment only runs when SSH setup exits 0 (`success` channel). If setup fails, a failure comment is posted instead.
+
+Common setup failure: the script on `main` health-checked `/puppies` while a PR deployed `/cats` (404). The setup script now checks `/` (200 or 302) and pulls from the PR branch head.
 
 ### Recreating the canvas (CLI recipe for an agent)
 

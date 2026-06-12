@@ -2,16 +2,16 @@ const { metrics } = require('@opentelemetry/api');
 
 const meter = metrics.getMeter('storejs-business');
 
-const puppiesCreated = meter.createCounter('store.puppies.created', {
-  description: 'Total number of puppies created',
+const catsCreated = meter.createCounter('store.cats.created', {
+  description: 'Total number of cats created',
 });
 
-const puppiesDeleted = meter.createCounter('store.puppies.deleted', {
-  description: 'Total number of puppies deleted',
+const catsDeleted = meter.createCounter('store.cats.deleted', {
+  description: 'Total number of cats deleted',
 });
 
-const puppiesTotal = meter.createUpDownCounter('store.puppies.total', {
-  description: 'Current number of puppies in the store',
+const catsTotal = meter.createUpDownCounter('store.cats.total', {
+  description: 'Current number of cats in the store',
 });
 
-module.exports = { puppiesCreated, puppiesDeleted, puppiesTotal };
+module.exports = { catsCreated, catsDeleted, catsTotal };

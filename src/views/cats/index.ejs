@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StoreJS — <%= puppy.name %></title>
+    <title>StoreJS — Cats</title>
     <style>
       body { background: #0d1117; color: #c9d1d9; font-family: "Segoe UI", system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
       h1 { color: #f0883e; border-bottom: 1px solid #30363d; padding-bottom: 8px; }
@@ -27,30 +27,35 @@
       .nav { margin-bottom: 24px; padding: 12px 0; border-bottom: 1px solid #30363d; }
       .nav a { margin-right: 16px; }
       form p { margin: 16px 0; }
-      .puppy-photo { display: block; max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #30363d; margin: 16px 0; }
+      .cat-photo { display: block; max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #30363d; margin: 16px 0; }
     </style>
   </head>
   <body>
     <div class="nav">
-      <a href="/puppies" class="btn">← Puppies</a>
+      <a href="/cats" class="btn">🐱 Cats</a>
+      <a href="/cats/new" class="btn">+ New cat</a>
+      <a href="/about">About</a>
     </div>
 
     <% if (notice) { %>
       <div class="notice"><%= notice %></div>
     <% } %>
 
-    <h1>🐶 <%= puppy.name %></h1>
+    <h1>🐱 Cats</h1>
 
-    <img class="puppy-photo" src="https://placedog.net/640/480?id=<%= puppy.id %>" alt="A random puppy" />
+    <img class="cat-photo" src="https://cataas.com/cat" alt="A random cat" />
 
-    <p>🐕 Name: <%= puppy.name %></p>
+    <% if (cats.length === 0) { %>
+      <p class="empty">No cats yet. Adopt your first feline friend! 🐾</p>
+    <% } %>
 
-    <p>
-      <a href="/puppies/<%= puppy.id %>/edit" class="btn">Edit</a>
-    </p>
-
-    <form action="/puppies/<%= puppy.id %>/delete" method="post" style="margin-top: 24px;">
-      <button type="submit" class="btn-danger" style="background: #da3633; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">Delete</button>
-    </form>
+    <ul>
+      <% cats.forEach(function(cat) { %>
+        <li>
+          <span>😺 Name: <%= cat.name %></span>
+          <a href="/cats/<%= cat.id %>" class="btn">View →</a>
+        </li>
+      <% }) %>
+    </ul>
   </body>
 </html>

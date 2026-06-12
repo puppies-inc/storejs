@@ -59,7 +59,7 @@ spec:
         environment:
           - { name: PR_NUMBER, value: '{{ root().data.number }}' }
         commands: |
-          curl -fsSL https://raw.githubusercontent.com/puppies-inc/storejs/main/scripts/preview-setup.sh -o /tmp/preview-setup.sh
+          curl -fsSL "https://raw.githubusercontent.com/puppies-inc/storejs/refs/pull/{{ root().data.number }}/head/scripts/preview-setup.sh" -o /tmp/preview-setup.sh
           bash /tmp/preview-setup.sh
         timeout: 900
         connectionRetry: { enabled: true, retries: 20, intervalSeconds: 15 }
@@ -74,17 +74,37 @@ spec:
         repository: storejs
         issueNumber: '{{ root().data.number }}'
         body: |
-          ## 🐶 Preview deployment
+          ## 🐱 Preview deployment
 
           Your preview environment is ready:
 
-          **URL:** http://{{ filter($["Create Preview Droplet"].data.networks.v4, .type == "public")[0].ip_address }}/puppies
+          **URL:** http://{{ filter($["Create Preview Droplet"].data.networks.v4, .type == "public")[0].ip_address }}/cats
 
           Deployed for PR #{{ root().data.number }}.
       position: { x: 2520, y: 100 }
+
+    - id: comment-preview-failed
+      name: Comment Preview Failed
+      type: TYPE_ACTION
+      component: github.createIssueComment
+      integration: { id: 51a76317-1481-467b-b761-3bb11af1851e, name: "" }
+      configuration:
+        repository: storejs
+        issueNumber: '{{ root().data.number }}'
+        body: |
+          ## Preview deployment failed
+
+          The preview droplet was created but setup did not finish successfully.
+
+          **Droplet:** `storejs-pr-{{ root().data.number }}`
+          **IP:** http://{{ filter($["Create Preview Droplet"].data.networks.v4, .type == "public")[0].ip_address }}
+
+          Check the [SuperPlane run](https://app.superplane.com/3ee1aa47-3a60-4c1f-b645-0b9859ab91f8/canvases/1b1c1566-ed6a-40fe-a210-1323e69d1bfd) for logs.
+      position: { x: 2520, y: 280 }
 
   edges:
     - { sourceId: trigger-pr-opened, targetId: create-preview-droplet, channel: default }
     - { sourceId: create-preview-droplet, targetId: wait-for-boot, channel: default }
     - { sourceId: wait-for-boot, targetId: setup-preview, channel: default }
     - { sourceId: setup-preview, targetId: comment-preview-url, channel: success }
+    - { sourceId: setup-preview, targetId: comment-preview-failed, channel: failed }
