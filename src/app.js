@@ -107,3 +107,10 @@ app.resetStore = () => {
 };
 
 module.exports = app;
+
+// Search endpoint for puppies
+app.get('/search', (req, res) => {
+  const query = req.query.q || '';
+  const results = puppies.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+  res.render('puppies/index', { puppies: results, query });
+});
