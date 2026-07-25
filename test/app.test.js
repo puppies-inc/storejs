@@ -95,4 +95,13 @@ describe('Puppy CRUD', () => {
     const response = await request(app).get('/puppies/999');
     expect(response.status).toBe(404);
   });
+
+  it('returns 404 when updating a non-existent puppy', async () => {
+    const response = await request(app)
+      .post('/puppies/999')
+      .type('form')
+      .send({ name: 'Ghost' });
+
+    expect(response.status).toBe(404);
+  });
 });
