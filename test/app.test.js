@@ -95,4 +95,20 @@ describe('Puppy CRUD', () => {
     const response = await request(app).get('/puppies/999');
     expect(response.status).toBe(404);
   });
+
+  it('returns 404 when deleting a non-existent puppy', async () => {
+    const response = await request(app).post('/puppies/99999/delete');
+    expect(response.status).toBe(404);
+  });
+
+  it('returns 404 when deleting with a non-numeric id', async () => {
+    const response = await request(app).post('/puppies/abc/delete');
+    expect(response.status).toBe(404);
+  });
+
+  it('returns a controlled response for malformed id encoding instead of a raw stack trace', async () => {
+    const response = await request(app).post('/puppies/%99999/delete');
+    expect(response.status).toBeGreaterThanOrEqual(400);
+    expect(response.text).not.toMatch(/at\s+.*\(.*:\d+:\d+\)/);
+  });
 });
