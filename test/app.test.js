@@ -34,47 +34,61 @@ describe('Puppy CRUD', () => {
     const createResponse = await request(app)
       .post('/puppies')
       .type('form')
-      .send({ name: 'Buddy' });
+      .send({ name: 'Buddy', breed: 'Labrador' });
 
     expect(createResponse.status).toBe(302);
     expect(createResponse.headers.location).toBe('/puppies/1');
 
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Puppy was successfully created.');
+    expect(showResponse.text).toContain('Breed: Labrador');
 
     const indexResponse = await request(app).get('/puppies');
     expect(indexResponse.text).toContain('Name: Buddy');
+    expect(indexResponse.text).toContain('Breed: Labrador');
   });
 
   it('show page loads', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Max' });
+    await request(app).post('/puppies').type('form').send({ name: 'Max', breed: 'Beagle' });
 
     const response = await request(app).get('/puppies/1');
     expect(response.status).toBe(200);
     expect(response.text).toContain('Name: Max');
+    expect(response.text).toContain('Breed: Beagle');
   });
 
   it('edit page loads', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Luna' });
+    await request(app).post('/puppies').type('form').send({ name: 'Luna', breed: 'Husky' });
 
     const response = await request(app).get('/puppies/1/edit');
     expect(response.status).toBe(200);
     expect(response.text).toContain('Editing puppy');
+    expect(response.text).toContain('value="Husky"');
+  });
+
+  it('index page lists breed alongside name for multiple puppies', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Rex', breed: 'Boxer' });
+    await request(app).post('/puppies').type('form').send({ name: 'Fido', breed: 'Corgi' });
+
+    const response = await request(app).get('/puppies');
+    expect(response.text).toContain('Name: Rex — Breed: Boxer');
+    expect(response.text).toContain('Name: Fido — Breed: Corgi');
   });
 
   it('update persists change and redirects correctly', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
+    await request(app).post('/puppies').type('form').send({ name: 'Old Name', breed: 'Poodle' });
 
     const updateResponse = await request(app)
       .post('/puppies/1')
       .type('form')
-      .send({ name: 'New Name' });
+      .send({ name: 'New Name', breed: 'Bulldog' });
 
     expect(updateResponse.status).toBe(302);
     expect(updateResponse.headers.location).toBe('/puppies/1');
 
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Name: New Name');
+    expect(showResponse.text).toContain('Breed: Bulldog');
     expect(showResponse.text).toContain('Puppy was successfully updated.');
   });
 
