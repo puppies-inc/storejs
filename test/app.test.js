@@ -54,6 +54,15 @@ describe('Puppy CRUD', () => {
     expect(response.text).toContain('Name: Max');
   });
 
+  it('delete form on show page confirms before submitting', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Max' });
+
+    const response = await request(app).get('/puppies/1');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('onsubmit="return confirm(');
+    expect(response.text).toContain('/puppies/1/delete');
+  });
+
   it('edit page loads', async () => {
     await request(app).post('/puppies').type('form').send({ name: 'Luna' });
 
