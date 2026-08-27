@@ -69,7 +69,7 @@ app.get('/puppies/:id', (req, res, next) => {
 app.get('/puppies/:id/edit', (req, res, next) => {
   const puppy = findPuppy(Number(req.params.id));
   if (!puppy) return next();
-  res.render('puppies/edit', { puppy, errors: [] });
+  res.render('puppies/edit', { puppy: { ...puppy, name: puppy.name || '' }, errors: [] });
 });
 
 app.post('/puppies/:id', (req, res, next) => {
