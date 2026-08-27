@@ -47,7 +47,7 @@
     <form action="/puppies" method="post">
       <p>
         <label for="name">Name</label>
-        <input id="name" name="name" type="text" value="<%= puppy.name %>" placeholder="Enter puppy name..." />
+        <input id="name" name="name" type="text" value="<%= puppy.name || '' %>" placeholder="Enter puppy name..." />
       </p>
       <p>
         <button type="submit">Create Puppy 🐾</button>
