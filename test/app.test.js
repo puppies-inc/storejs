@@ -37,9 +37,11 @@ describe('Puppy CRUD', () => {
       .send({ name: 'Buddy' });
 
     expect(createResponse.status).toBe(302);
-    expect(createResponse.headers.location).toBe('/puppies/1');
+    expect(createResponse.headers.location).toBe(
+      '/puppies/1?notice=Puppy%20was%20successfully%20created.'
+    );
 
-    const showResponse = await request(app).get('/puppies/1');
+    const showResponse = await request(app).get(createResponse.headers.location);
     expect(showResponse.text).toContain('Puppy was successfully created.');
 
     const indexResponse = await request(app).get('/puppies');
@@ -71,9 +73,11 @@ describe('Puppy CRUD', () => {
       .send({ name: 'New Name' });
 
     expect(updateResponse.status).toBe(302);
-    expect(updateResponse.headers.location).toBe('/puppies/1');
+    expect(updateResponse.headers.location).toBe(
+      '/puppies/1?notice=Puppy%20was%20successfully%20updated.'
+    );
 
-    const showResponse = await request(app).get('/puppies/1');
+    const showResponse = await request(app).get(updateResponse.headers.location);
     expect(showResponse.text).toContain('Name: New Name');
     expect(showResponse.text).toContain('Puppy was successfully updated.');
   });
@@ -84,9 +88,11 @@ describe('Puppy CRUD', () => {
     const deleteResponse = await request(app).post('/puppies/1/delete');
 
     expect(deleteResponse.status).toBe(302);
-    expect(deleteResponse.headers.location).toBe('/puppies');
+    expect(deleteResponse.headers.location).toBe(
+      '/puppies?notice=Puppy%20was%20successfully%20deleted.'
+    );
 
-    const indexResponse = await request(app).get('/puppies');
+    const indexResponse = await request(app).get(deleteResponse.headers.location);
     expect(indexResponse.text).not.toContain('Name: To Delete');
     expect(indexResponse.text).toContain('Puppy was successfully deleted.');
   });
@@ -94,5 +100,20 @@ describe('Puppy CRUD', () => {
   it('returns 404 for missing puppy', async () => {
     const response = await request(app).get('/puppies/999');
     expect(response.status).toBe(404);
+  });
+
+  it('shows the notice even after an unrelated request happens in between', async () => {
+    const createResponse = await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'Rex' });
+
+    // Simulate an unrelated request landing on the server between the
+    // redirect and the user's follow-up page load (e.g. a favicon request,
+    // health check, or another user's request).
+    await request(app).get('/about');
+
+    const showResponse = await request(app).get(createResponse.headers.location);
+    expect(showResponse.text).toContain('Puppy was successfully created.');
   });
 });

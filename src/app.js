@@ -12,15 +12,9 @@ app.use(express.urlencoded({ extended: false }));
 let puppies = [];
 let nextId = 1;
 
-function setNotice(req, message) {
-  req.app.locals.notice = message;
+function redirectWithNotice(res, location, message) {
+  res.redirect(`${location}?notice=${encodeURIComponent(message)}`);
 }
-
-app.use((req, res, next) => {
-  res.locals.notice = req.app.locals.notice || null;
-  req.app.locals.notice = null;
-  next();
-});
 
 function findPuppy(id) {
   return puppies.find((puppy) => puppy.id === id);
@@ -31,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/puppies', (req, res) => {
-  res.render('puppies/index', { puppies });
+  res.render('puppies/index', { puppies, notice: req.query.notice || null });
 });
 
 app.get('/about', (req, res) => {
@@ -56,14 +50,13 @@ app.post('/puppies', (req, res) => {
   puppiesCreated.add(1);
   puppiesTotal.add(1);
 
-  setNotice(req, 'Puppy was successfully created.');
-  res.redirect(`/puppies/${puppy.id}`);
+  redirectWithNotice(res, `/puppies/${puppy.id}`, 'Puppy was successfully created.');
 });
 
 app.get('/puppies/:id', (req, res, next) => {
   const puppy = findPuppy(Number(req.params.id));
   if (!puppy) return next();
-  res.render('puppies/show', { puppy });
+  res.render('puppies/show', { puppy, notice: req.query.notice || null });
 });
 
 app.get('/puppies/:id/edit', (req, res, next) => {
@@ -79,8 +72,7 @@ app.post('/puppies/:id', (req, res, next) => {
   puppy.name = req.body.name || '';
   puppy.updated_at = new Date();
 
-  setNotice(req, 'Puppy was successfully updated.');
-  res.redirect(`/puppies/${puppy.id}`);
+  redirectWithNotice(res, `/puppies/${puppy.id}`, 'Puppy was successfully updated.');
 });
 
 app.post('/puppies/:id/delete', (req, res, next) => {
@@ -92,8 +84,7 @@ app.post('/puppies/:id/delete', (req, res, next) => {
   puppiesDeleted.add(1);
   puppiesTotal.add(-1);
 
-  setNotice(req, 'Puppy was successfully deleted.');
-  res.redirect('/puppies');
+  redirectWithNotice(res, '/puppies', 'Puppy was successfully deleted.');
 });
 
 app.use((req, res) => {
@@ -103,7 +94,6 @@ app.use((req, res) => {
 app.resetStore = () => {
   puppies = [];
   nextId = 1;
-  app.locals.notice = null;
 };
 
 module.exports = app;
