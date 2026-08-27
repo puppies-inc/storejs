@@ -91,6 +91,13 @@ describe('Puppy CRUD', () => {
     expect(indexResponse.text).toContain('Puppy was successfully deleted.');
   });
 
+  it('show page delete form includes a confirm prompt', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Confirm Me' });
+
+    const response = await request(app).get('/puppies/1');
+    expect(response.text).toContain('onsubmit="return confirm(');
+  });
+
   it('returns 404 for missing puppy', async () => {
     const response = await request(app).get('/puppies/999');
     expect(response.status).toBe(404);
