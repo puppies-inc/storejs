@@ -38,6 +38,10 @@ app.get('/about', (req, res) => {
   res.render('about');
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.get('/puppies/new', (req, res) => {
   res.render('puppies/new', { puppy: { name: '' }, errors: [] });
 });
