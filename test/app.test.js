@@ -62,6 +62,27 @@ describe('Puppy CRUD', () => {
     expect(response.text).toContain('Editing puppy');
   });
 
+  it('edit page pre-fills the name input with the puppy current name', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Rex' });
+
+    const response = await request(app).get('/puppies/1/edit');
+    expect(response.status).toBe(200);
+    expect(response.text).toMatch(/<input[^>]*id="name"[^>]*value="Rex"/);
+  });
+
+  it('edit page safely escapes special characters in the name value', async () => {
+    await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'O\'Brien "Rex" & Co. <3' });
+
+    const response = await request(app).get('/puppies/1/edit');
+    expect(response.status).toBe(200);
+    expect(response.text).toMatch(
+      /<input[^>]*id="name"[^>]*value="O&#39;Brien &#34;Rex&#34; &amp; Co\. &lt;3"/
+    );
+  });
+
   it('update persists change and redirects correctly', async () => {
     await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
 
