@@ -28,13 +28,14 @@ describe('Puppy CRUD', () => {
     const response = await request(app).get('/puppies/new');
     expect(response.status).toBe(200);
     expect(response.text).toContain('New puppy');
+    expect(response.text).toContain('id="breed"');
   });
 
   it('create increases puppy count and redirects correctly', async () => {
     const createResponse = await request(app)
       .post('/puppies')
       .type('form')
-      .send({ name: 'Buddy' });
+      .send({ name: 'Buddy', breed: 'Labrador' });
 
     expect(createResponse.status).toBe(302);
     expect(createResponse.headers.location).toBe('/puppies/1');
@@ -44,37 +45,56 @@ describe('Puppy CRUD', () => {
 
     const indexResponse = await request(app).get('/puppies');
     expect(indexResponse.text).toContain('Name: Buddy');
+    expect(indexResponse.text).toContain('Breed: Labrador');
+  });
+
+  it('create without breed still works', async () => {
+    const createResponse = await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'Rex' });
+
+    expect(createResponse.status).toBe(302);
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.status).toBe(200);
+    expect(showResponse.text).toContain('Name: Rex');
+    expect(showResponse.text).toContain('Breed:');
   });
 
   it('show page loads', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Max' });
+    await request(app).post('/puppies').type('form').send({ name: 'Max', breed: 'Poodle' });
 
     const response = await request(app).get('/puppies/1');
     expect(response.status).toBe(200);
     expect(response.text).toContain('Name: Max');
+    expect(response.text).toContain('Breed: Poodle');
   });
 
   it('edit page loads', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Luna' });
+    await request(app).post('/puppies').type('form').send({ name: 'Luna', breed: 'Beagle' });
 
     const response = await request(app).get('/puppies/1/edit');
     expect(response.status).toBe(200);
     expect(response.text).toContain('Editing puppy');
+    expect(response.text).toContain('id="breed"');
+    expect(response.text).toContain('value="Beagle"');
   });
 
   it('update persists change and redirects correctly', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
+    await request(app).post('/puppies').type('form').send({ name: 'Old Name', breed: 'Old Breed' });
 
     const updateResponse = await request(app)
       .post('/puppies/1')
       .type('form')
-      .send({ name: 'New Name' });
+      .send({ name: 'New Name', breed: 'New Breed' });
 
     expect(updateResponse.status).toBe(302);
     expect(updateResponse.headers.location).toBe('/puppies/1');
 
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Name: New Name');
+    expect(showResponse.text).toContain('Breed: New Breed');
     expect(showResponse.text).toContain('Puppy was successfully updated.');
   });
 
