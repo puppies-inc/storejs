@@ -52,7 +52,7 @@
     <ul>
       <% puppies.forEach(function(puppy) { %>
         <li>
-          <span>🐕 Name: <%= puppy.name %></span>
+          <span>🐕 Name: <%= puppy.name %> · 🦴 Breed: <%= puppy.breed %></span>
           <a href="/puppies/<%= puppy.id %>" class="btn">View →</a>
         </li>
       <% }) %>
