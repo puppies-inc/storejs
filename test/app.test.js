@@ -62,6 +62,14 @@ describe('Puppy CRUD', () => {
     expect(response.text).toContain('Editing puppy');
   });
 
+  it('edit page pre-fills the current name', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Rex' });
+
+    const response = await request(app).get('/puppies/1/edit');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('value="Rex"');
+  });
+
   it('update persists change and redirects correctly', async () => {
     await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
 
