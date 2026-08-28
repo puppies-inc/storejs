@@ -26,6 +26,16 @@ function findPuppy(id) {
   return puppies.find((puppy) => puppy.id === id);
 }
 
+function validatePuppy({ breed }) {
+  const errors = [];
+
+  if (!breed || !breed.trim()) {
+    errors.push('Breed is required.');
+  }
+
+  return errors;
+}
+
 app.get('/', (req, res) => {
   res.redirect('/puppies');
 });
@@ -39,14 +49,23 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/puppies/new', (req, res) => {
-  res.render('puppies/new', { puppy: { name: '' }, errors: [] });
+  res.render('puppies/new', { puppy: { name: '', breed: '' }, errors: [] });
 });
 
 app.post('/puppies', (req, res) => {
+  const name = req.body.name || '';
+  const breed = req.body.breed || '';
+  const errors = validatePuppy({ breed });
+
+  if (errors.length > 0) {
+    return res.status(422).render('puppies/new', { puppy: { name, breed }, errors });
+  }
+
   const now = new Date();
   const puppy = {
     id: nextId,
-    name: req.body.name || '',
+    name,
+    breed,
     created_at: now,
     updated_at: now
   };
@@ -76,7 +95,16 @@ app.post('/puppies/:id', (req, res, next) => {
   const puppy = findPuppy(Number(req.params.id));
   if (!puppy) return next();
 
-  puppy.name = req.body.name || '';
+  const name = req.body.name || '';
+  const breed = req.body.breed || '';
+  const errors = validatePuppy({ breed });
+
+  if (errors.length > 0) {
+    return res.status(422).render('puppies/edit', { puppy: { ...puppy, name, breed }, errors });
+  }
+
+  puppy.name = name;
+  puppy.breed = breed;
   puppy.updated_at = new Date();
 
   setNotice(req, 'Puppy was successfully updated.');
