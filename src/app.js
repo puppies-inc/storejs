@@ -30,6 +30,10 @@ app.get('/', (req, res) => {
   res.redirect('/puppies');
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.get('/puppies', (req, res) => {
   res.render('puppies/index', { puppies });
 });
