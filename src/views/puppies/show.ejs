@@ -41,7 +41,7 @@
 
     <h1>🐶 <%= puppy.name %></h1>
 
-    <img class="puppy-photo" src="https://placedog.net/640/480?id=<%= puppy.id %>" alt="A random puppy" />
+    <img class="puppy-photo" src="<%= puppy.image_url && puppy.image_url.length > 0 ? puppy.image_url : `https://placedog.net/640/480?id=${puppy.id}` %>" alt="A random puppy" />
 
     <p>🐕 Name: <%= puppy.name %></p>
 

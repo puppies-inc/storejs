@@ -52,7 +52,12 @@
     <ul>
       <% puppies.forEach(function(puppy) { %>
         <li>
-          <span>🐕 Name: <%= puppy.name %></span>
+          <span>
+            <% if (puppy.image_url && puppy.image_url.length > 0) { %>
+              <img src="<%= puppy.image_url %>" alt="A random puppy" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; vertical-align: middle; margin-right: 8px;" />
+            <% } %>
+            🐕 Name: <%= puppy.name %>
+          </span>
           <a href="/puppies/<%= puppy.id %>" class="btn">View →</a>
         </li>
       <% }) %>

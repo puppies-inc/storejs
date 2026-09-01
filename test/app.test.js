@@ -95,4 +95,42 @@ describe('Puppy CRUD', () => {
     const response = await request(app).get('/puppies/999');
     expect(response.status).toBe(404);
   });
+
+  it('create with image_url stores and renders the image on the show page', async () => {
+    const imageUrl = 'https://example.com/puppy.jpg';
+
+    await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'Rex', image_url: imageUrl });
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.status).toBe(200);
+    expect(showResponse.text).toContain(`src="${imageUrl}"`);
+  });
+
+  it('update with new image_url replaces the rendered image', async () => {
+    await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'Rex', image_url: 'https://example.com/old.jpg' });
+
+    const newImageUrl = 'https://example.com/new.jpg';
+    await request(app)
+      .post('/puppies/1')
+      .type('form')
+      .send({ name: 'Rex', image_url: newImageUrl });
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.text).toContain(`src="${newImageUrl}"`);
+    expect(showResponse.text).not.toContain('https://example.com/old.jpg');
+  });
+
+  it('falls back to placeholder image when no image_url is provided', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Rex' });
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.status).toBe(200);
+    expect(showResponse.text).toContain('src="https://placedog.net/640/480?id=1"');
+  });
 });
