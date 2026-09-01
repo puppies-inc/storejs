@@ -95,4 +95,13 @@ describe('Puppy CRUD', () => {
     const response = await request(app).get('/puppies/999');
     expect(response.status).toBe(404);
   });
+
+  it('show page delete form asks for confirmation before submitting', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Guard' });
+
+    const response = await request(app).get('/puppies/1');
+    expect(response.text).toMatch(
+      /<form[^>]*action="\/puppies\/1\/delete"[^>]*onsubmit="return confirm\(/
+    );
+  });
 });
