@@ -8,8 +8,9 @@ The app should be intentionally simple, readable, and easy to demo.
 
 ## Product Scope
 
-- Single domain entity: `Puppy`
-- Single user-facing attribute: `name`
+- Single domain entity: `Puppy` (represents any store animal, not just dogs)
+- User-facing attributes: `name`, `species`
+- Supported species: `Dog`, `Cat`, `Rabbit`, `Hamster`, `Bird`, `Fish`, `Reptile`, `Other`
 - No additional business entities
 
 ## Out of Scope
@@ -39,11 +40,13 @@ The app should be intentionally simple, readable, and easy to demo.
 `Puppy` fields:
 - `id` (primary key)
 - `name` (string)
+- `species` (string, one of the supported species listed above)
 - timestamps if easy (`created_at`, `updated_at`)
 
 Validation requirement:
 - Keep it lightweight.
 - `name` may be optional for demo simplicity (acceptable to persist empty/missing name).
+- `species` defaults to `Dog` when missing or unrecognized, keeping existing data/behavior valid.
 
 ### 3. HTML Pages
 
@@ -52,6 +55,7 @@ Validation requirement:
 - List all puppies
 - For each puppy:
   - show `Name: <value>`
+  - show `Species: <value>`
   - show link to puppy detail page
 - Show `New puppy` action
 
@@ -59,11 +63,13 @@ Validation requirement:
 - Heading: `New puppy`
 - Form with:
   - label/input for `name`
+  - label/select for `species` (one of the supported species)
   - submit action
 - Link back to puppies index
 
 #### Show (`/puppies/:id`)
 - Display puppy name
+- Display puppy species
 - Actions:
   - edit
   - delete
@@ -110,6 +116,8 @@ Implement basic automated tests for:
 - edit page loads
 - update persists change and redirects correctly
 - delete decreases puppy count and redirects correctly
+- species defaults to `Dog` when omitted and can be set to any supported species
+- unrecognized species values fall back to the default
 
 Keep tests fast and simple.
 
