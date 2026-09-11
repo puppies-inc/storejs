@@ -46,6 +46,38 @@ describe('Puppy CRUD', () => {
     expect(indexResponse.text).toContain('Name: Buddy');
   });
 
+  it('defaults to Dog when no species is provided', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Buddy' });
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.text).toContain('Species: Dog');
+  });
+
+  it('creates animals of other supported species', async () => {
+    const createResponse = await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'Whiskers', species: 'Cat' });
+
+    expect(createResponse.status).toBe(302);
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.text).toContain('Species: Cat');
+
+    const indexResponse = await request(app).get('/puppies');
+    expect(indexResponse.text).toContain('Species: Cat');
+  });
+
+  it('falls back to the default species for unrecognized values', async () => {
+    await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'Mystery', species: 'Dragon' });
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.text).toContain('Species: Dog');
+  });
+
   it('show page loads', async () => {
     await request(app).post('/puppies').type('form').send({ name: 'Max' });
 
@@ -76,6 +108,20 @@ describe('Puppy CRUD', () => {
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Name: New Name');
     expect(showResponse.text).toContain('Puppy was successfully updated.');
+  });
+
+  it('update persists a species change', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Hoppy', species: 'Rabbit' });
+
+    const updateResponse = await request(app)
+      .post('/puppies/1')
+      .type('form')
+      .send({ name: 'Hoppy', species: 'Hamster' });
+
+    expect(updateResponse.status).toBe(302);
+
+    const showResponse = await request(app).get('/puppies/1');
+    expect(showResponse.text).toContain('Species: Hamster');
   });
 
   it('delete decreases puppy count and redirects correctly', async () => {

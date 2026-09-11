@@ -50,6 +50,16 @@
         <input id="name" name="name" type="text" value="<%= puppy.name %>" placeholder="Enter puppy name..." />
       </p>
       <p>
+        <label for="species">Animal type</label>
+        <select id="species" name="species">
+          <% animalSpecies.forEach(function(species) { %>
+            <option value="<%= species %>" <%= puppy.species === species ? 'selected' : '' %>>
+              <%= speciesEmoji(species) %> <%= species %>
+            </option>
+          <% }) %>
+        </select>
+      </p>
+      <p>
         <button type="submit">Create Puppy 🐾</button>
       </p>
     </form>

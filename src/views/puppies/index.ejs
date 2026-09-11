@@ -52,7 +52,7 @@
     <ul>
       <% puppies.forEach(function(puppy) { %>
         <li>
-          <span>🐕 Name: <%= puppy.name %></span>
+          <span><%= speciesEmoji(puppy.species) %> Name: <%= puppy.name %> · Species: <%= puppy.species %></span>
           <a href="/puppies/<%= puppy.id %>" class="btn">View →</a>
         </li>
       <% }) %>
