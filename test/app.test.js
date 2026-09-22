@@ -95,4 +95,23 @@ describe('Puppy CRUD', () => {
     const response = await request(app).get('/puppies/999');
     expect(response.status).toBe(404);
   });
+
+  it('theme toggle is present and defaults to dark on every page', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Theme Pup' });
+
+    const pages = [
+      await request(app).get('/puppies'),
+      await request(app).get('/puppies/new'),
+      await request(app).get('/puppies/1'),
+      await request(app).get('/puppies/1/edit'),
+      await request(app).get('/about')
+    ];
+
+    for (const response of pages) {
+      expect(response.status).toBe(200);
+      expect(response.text).toContain('data-theme="dark"');
+      expect(response.text).toContain('id="theme-toggle"');
+      expect(response.text).toContain('Light mode');
+    }
+  });
 });
