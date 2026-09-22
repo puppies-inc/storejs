@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About StoreJS</title>
+    <%- include('partials/theme') %>
     <style>
-      body { background: #0d1117; color: #c9d1d9; font-family: monospace; max-width: 800px; margin: 0 auto; padding: 20px; }
-      pre { color: #58a6ff; font-size: 10px; line-height: 1.1; }
-      h2 { color: #f0883e; }
-      a { color: #58a6ff; }
-      .stats { background: #161b22; padding: 16px; border-radius: 8px; border: 1px solid #30363d; margin: 16px 0; }
-      .stats span { color: #f0883e; font-weight: bold; }
+      body { font-family: monospace; }
+      h2 { border-bottom: none; padding-bottom: 0; }
     </style>
   </head>
   <body>
+    <%- include('partials/theme-toggle') %>
     <pre>
    _____ _                    _ _____ 
   / ____| |                  | / ____|
@@ -26,7 +24,7 @@
     <h2>🐶 About</h2>
     <p>A demo puppy store app built for testing preview environments with SuperPlane. 🐾</p>
 
-    <img src="https://placedog.net/300/200" alt="A random puppy" style="display:block; max-width: 300px; height: auto; border-radius: 8px; border: 1px solid #30363d; margin: 16px 0;" />
+    <img src="https://placedog.net/300/200" alt="A random puppy" style="display:block; max-width: 300px; height: auto; border-radius: 8px; border: 1px solid var(--border); margin: 16px 0;" />
 
     <div class="stats">
       <p>🏗️ Runtime: <span>Node.js</span></p>

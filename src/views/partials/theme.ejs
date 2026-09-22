@@ -1,0 +1,92 @@
+<style>
+      html[data-theme="dark"] {
+        --bg: #0d1117;
+        --text: #c9d1d9;
+        --heading: #f0883e;
+        --border: #30363d;
+        --link: #58a6ff;
+        --btn-bg: #238636;
+        --btn-hover: #2ea043;
+        --btn-text: #fff;
+        --danger: #da3633;
+        --danger-hover: #f85149;
+        --card-bg: #161b22;
+        --muted: #8b949e;
+        --notice-bg: #1f2937;
+        --input-bg: #161b22;
+        --input-text: #c9d1d9;
+      }
+      html[data-theme="light"] {
+        --bg: #ffffff;
+        --text: #1f2328;
+        --heading: #f0883e;
+        --border: #d0d7de;
+        --link: #0969da;
+        --btn-bg: #238636;
+        --btn-hover: #2ea043;
+        --btn-text: #fff;
+        --danger: #da3633;
+        --danger-hover: #f85149;
+        --card-bg: #f6f8fa;
+        --muted: #656d76;
+        --notice-bg: #f6f8fa;
+        --input-bg: #ffffff;
+        --input-text: #1f2328;
+      }
+      body { background: var(--bg); color: var(--text); font-family: "Segoe UI", system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+      h1, h2 { color: var(--heading); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+      a { color: var(--link); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .btn { display: inline-block; background: var(--btn-bg); color: var(--btn-text); padding: 8px 16px; border-radius: 6px; text-decoration: none; margin: 2px 0; }
+      .btn:hover { background: var(--btn-hover); text-decoration: none; }
+      .btn-danger { background: var(--danger); }
+      .btn-danger:hover { background: var(--danger-hover); }
+      input, textarea { background: var(--input-bg); color: var(--input-text); border: 1px solid var(--border); padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; font-size: 14px; }
+      input:focus { border-color: var(--link); outline: none; }
+      label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 13px; }
+      button { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+      button:hover { background: var(--btn-hover); }
+      button.btn-danger { background: var(--danger); }
+      button.btn-danger:hover { background: var(--danger-hover); }
+      .notice { background: var(--notice-bg); border-left: 4px solid var(--link); padding: 10px 16px; border-radius: 4px; margin-bottom: 16px; }
+      .error { background: var(--notice-bg); border-left: 4px solid var(--danger); padding: 10px 16px; border-radius: 4px; color: var(--danger-hover); }
+      ul { list-style: none; padding: 0; }
+      li { background: var(--card-bg); margin: 8px 0; padding: 16px; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+      li:hover { border-color: var(--link); }
+      .empty { color: var(--muted); font-style: italic; padding: 40px 0; text-align: center; }
+      .nav { margin-bottom: 24px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+      .nav a { margin-right: 16px; }
+      form p { margin: 16px 0; }
+      .puppy-photo { display: block; max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); margin: 16px 0; }
+      #theme-toggle { background: var(--card-bg); color: var(--text); border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+      #theme-toggle:hover { background: var(--card-bg); border-color: var(--link); }
+      pre { color: var(--link); font-size: 10px; line-height: 1.1; }
+      .stats { background: var(--card-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin: 16px 0; }
+      .stats span { color: var(--heading); font-weight: bold; }
+    </style>
+    <script>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem("theme");
+        } catch (e) {}
+        var theme = stored === "light" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+        function syncLabel(button) {
+          button.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          var button = document.getElementById("theme-toggle");
+          if (!button) return;
+          syncLabel(button);
+          button.addEventListener("click", function () {
+            var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            try {
+              localStorage.setItem("theme", next);
+            } catch (e) {}
+            syncLabel(button);
+          });
+        });
+      })();
+    </script>
