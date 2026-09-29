@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
-const { puppiesCreated, puppiesDeleted, puppiesTotal } = require('./metrics');
+const { animalsCreated, animalsDeleted, animalsTotal } = require('./metrics');
+const { SPECIES, DEFAULT_SPECIES, resolveSpecies, photoUrl } = require('./species');
 
 const app = express();
 
@@ -9,7 +10,11 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: false }));
 
-let puppies = [];
+app.locals.SPECIES = SPECIES;
+app.locals.resolveSpecies = resolveSpecies;
+app.locals.photoUrl = photoUrl;
+
+let animals = [];
 let nextId = 1;
 
 function setNotice(req, message) {
@@ -22,78 +27,93 @@ app.use((req, res, next) => {
   next();
 });
 
-function findPuppy(id) {
-  return puppies.find((puppy) => puppy.id === id);
+function findAnimal(id) {
+  return animals.find((animal) => animal.id === id);
 }
 
 app.get('/', (req, res) => {
-  res.redirect('/puppies');
+  res.redirect('/animals');
 });
 
 app.get('/puppies', (req, res) => {
-  res.render('puppies/index', { puppies });
+  res.redirect('/animals');
+});
+
+app.get('/animals', (req, res) => {
+  res.render('animals/index', { animals });
 });
 
 app.get('/about', (req, res) => {
   res.render('about');
 });
 
-app.get('/puppies/new', (req, res) => {
-  res.render('puppies/new', { puppy: { name: '' }, errors: [] });
+app.get('/animals/new', (req, res) => {
+  res.render('animals/new', { animal: { name: '', species: DEFAULT_SPECIES.id }, errors: [] });
 });
 
-app.post('/puppies', (req, res) => {
+app.post('/animals', (req, res) => {
   const now = new Date();
-  const puppy = {
+  const species = resolveSpecies(req.body.species);
+  const animal = {
     id: nextId,
     name: req.body.name || '',
+    species: species.id,
     created_at: now,
     updated_at: now
   };
 
   nextId += 1;
-  puppies.push(puppy);
-  puppiesCreated.add(1);
-  puppiesTotal.add(1);
+  animals.push(animal);
+  animalsCreated.add(1, { species: animal.species });
+  animalsTotal.add(1, { species: animal.species });
 
-  setNotice(req, 'Puppy was successfully created.');
-  res.redirect(`/puppies/${puppy.id}`);
+  setNotice(req, `${species.label} was successfully created.`);
+  res.redirect(`/animals/${animal.id}`);
 });
 
-app.get('/puppies/:id', (req, res, next) => {
-  const puppy = findPuppy(Number(req.params.id));
-  if (!puppy) return next();
-  res.render('puppies/show', { puppy });
+app.get('/animals/:id', (req, res, next) => {
+  const animal = findAnimal(Number(req.params.id));
+  if (!animal) return next();
+  res.render('animals/show', { animal });
 });
 
-app.get('/puppies/:id/edit', (req, res, next) => {
-  const puppy = findPuppy(Number(req.params.id));
-  if (!puppy) return next();
-  res.render('puppies/edit', { puppy, errors: [] });
+app.get('/animals/:id/edit', (req, res, next) => {
+  const animal = findAnimal(Number(req.params.id));
+  if (!animal) return next();
+  res.render('animals/edit', { animal, errors: [] });
 });
 
-app.post('/puppies/:id', (req, res, next) => {
-  const puppy = findPuppy(Number(req.params.id));
-  if (!puppy) return next();
+app.post('/animals/:id', (req, res, next) => {
+  const animal = findAnimal(Number(req.params.id));
+  if (!animal) return next();
 
-  puppy.name = req.body.name || '';
-  puppy.updated_at = new Date();
+  const previousSpecies = animal.species;
+  const species = resolveSpecies(req.body.species);
 
-  setNotice(req, 'Puppy was successfully updated.');
-  res.redirect(`/puppies/${puppy.id}`);
+  animal.name = req.body.name || '';
+  animal.species = species.id;
+  animal.updated_at = new Date();
+
+  if (previousSpecies !== animal.species) {
+    animalsTotal.add(-1, { species: previousSpecies });
+    animalsTotal.add(1, { species: animal.species });
+  }
+
+  setNotice(req, `${species.label} was successfully updated.`);
+  res.redirect(`/animals/${animal.id}`);
 });
 
-app.post('/puppies/:id/delete', (req, res, next) => {
+app.post('/animals/:id/delete', (req, res, next) => {
   const id = Number(req.params.id);
-  const puppy = findPuppy(id);
-  if (!puppy) return next();
+  const animal = findAnimal(id);
+  if (!animal) return next();
 
-  puppies = puppies.filter((item) => item.id !== id);
-  puppiesDeleted.add(1);
-  puppiesTotal.add(-1);
+  animals = animals.filter((item) => item.id !== id);
+  animalsDeleted.add(1, { species: animal.species });
+  animalsTotal.add(-1, { species: animal.species });
 
-  setNotice(req, 'Puppy was successfully deleted.');
-  res.redirect('/puppies');
+  setNotice(req, `${resolveSpecies(animal.species).label} was successfully deleted.`);
+  res.redirect('/animals');
 });
 
 app.use((req, res) => {
@@ -101,7 +121,7 @@ app.use((req, res) => {
 });
 
 app.resetStore = () => {
-  puppies = [];
+  animals = [];
   nextId = 1;
   app.locals.notice = null;
 };

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoreJS — Animals</title>
+    <%- include('../partials/theme') %>
+  </head>
+  <body>
+    <div class="nav">
+      <a href="/animals" class="btn">🐾 Animals</a>
+      <a href="/animals/new" class="btn">+ New animal</a>
+      <a href="/about">About</a>
+      <%- include('../partials/theme-toggle') %>
+    </div>
+
+    <% if (notice) { %>
+      <div class="notice"><%= notice %></div>
+    <% } %>
+
+    <h1>🐾 Animals</h1>
+
+    <% if (animals.length === 0) { %>
+      <p class="empty">No animals yet. Add your first friend! 🐾</p>
+    <% } %>
+
+    <ul>
+      <% animals.forEach(function(animal) { %>
+        <% const species = resolveSpecies(animal.species); %>
+        <li>
+          <span><%= species.emoji %> Name: <%= animal.name %> · <%= species.label %></span>
+          <a href="/animals/<%= animal.id %>" class="btn">View →</a>
+        </li>
+      <% }) %>
+    </ul>
+  </body>
+</html>

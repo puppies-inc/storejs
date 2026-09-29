@@ -1,6 +1,6 @@
 # storejs
 
-Minimal Node.js CRUD demo for `Puppy` using Express + EJS.
+Minimal Node.js CRUD demo for animals using Express + EJS.
 
 ## Local run
 

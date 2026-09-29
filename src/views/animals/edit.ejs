@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StoreJS — Editing puppy</title>
+    <title>StoreJS — Editing animal</title>
     <%- include('../partials/theme') %>
   </head>
   <body>
     <div class="nav">
-      <a href="/puppies/<%= puppy.id %>" class="btn">← Back</a>
+      <a href="/animals/<%= animal.id %>" class="btn">← Back</a>
       <%- include('../partials/theme-toggle') %>
     </div>
 
-    <h1>🐶 Editing puppy</h1>
+    <h1>🐾 Editing animal</h1>
 
     <% if (errors && errors.length > 0) { %>
       <div class="error">
@@ -22,13 +22,10 @@
       </div>
     <% } %>
 
-    <form action="/puppies/<%= puppy.id %>" method="post">
+    <form action="/animals/<%= animal.id %>" method="post">
+      <%- include('../partials/animal-form-fields', { animal }) %>
       <p>
-        <label for="name">Name</label>
-        <input id="name" name="name" type="text" value="<%= puppy.name %>" />
-      </p>
-      <p>
-        <button type="submit">Update Puppy 🐾</button>
+        <button type="submit">Update Animal 🐾</button>
       </p>
     </form>
   </body>
