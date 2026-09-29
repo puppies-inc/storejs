@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoreJS — <%= animal.name %></title>
+    <%- include('../partials/theme') %>
+  </head>
+  <body>
+    <% const species = resolveSpecies(animal.species); %>
+    <div class="nav">
+      <a href="/animals" class="btn">← Animals</a>
+      <%- include('../partials/theme-toggle') %>
+    </div>
+
+    <% if (notice) { %>
+      <div class="notice"><%= notice %></div>
+    <% } %>
+
+    <h1><%= species.emoji %> <%= animal.name %></h1>
+
+    <img class="animal-photo" src="<%= photoUrl(animal) %>" alt="<%= species.label %>" />
+
+    <p><%= species.emoji %> Name: <%= animal.name %></p>
+    <p>Species: <%= species.label %></p>
+
+    <p>
+      <a href="/animals/<%= animal.id %>/edit" class="btn">Edit</a>
+    </p>
+
+    <form action="/animals/<%= animal.id %>/delete" method="post" style="margin-top: 24px;">
+      <button type="submit" class="btn-danger">Delete</button>
+    </form>
+  </body>
+</html>

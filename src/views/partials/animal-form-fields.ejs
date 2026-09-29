@@ -1,0 +1,14 @@
+<p>
+  <label for="name">Name</label>
+  <input id="name" name="name" type="text" value="<%= animal.name %>" placeholder="Enter animal name..." />
+</p>
+<p>
+  <label for="species">Species</label>
+  <select id="species" name="species">
+    <% SPECIES.forEach(function(species) { %>
+      <option value="<%= species.id %>" <%= animal.species === species.id ? 'selected' : '' %>>
+        <%= species.emoji %> <%= species.label %>
+      </option>
+    <% }) %>
+  </select>
+</p>
