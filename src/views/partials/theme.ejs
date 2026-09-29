@@ -63,6 +63,15 @@
       pre { color: var(--link); font-size: 10px; line-height: 1.1; }
       .stats { background: var(--card-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin: 16px 0; }
       .stats span { color: var(--heading); font-weight: bold; }
+      .modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+      .modal[hidden] { display: none; }
+      .modal-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); }
+      .modal-dialog { position: relative; background: var(--card-bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 24px; max-width: 420px; width: 100%; }
+      .modal-dialog h2 { margin-top: 0; }
+      .modal-dialog p { color: var(--muted); }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+      button.btn-secondary { background: var(--card-bg); color: var(--text); border: 1px solid var(--border); }
+      button.btn-secondary:hover { background: var(--card-bg); border-color: var(--link); }
     </style>
     <script>
       (function () {
