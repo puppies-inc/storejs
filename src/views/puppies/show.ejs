@@ -26,8 +26,60 @@
       <a href="/puppies/<%= puppy.id %>/edit" class="btn">Edit</a>
     </p>
 
-    <form action="/puppies/<%= puppy.id %>/delete" method="post" style="margin-top: 24px;">
-      <button type="submit" class="btn-danger">Delete</button>
+    <form id="delete-puppy-form" action="/puppies/<%= puppy.id %>/delete" method="post" style="margin-top: 24px;">
+      <button type="submit" class="btn-danger" id="delete-puppy-button">Delete</button>
     </form>
+
+    <div id="delete-puppy-modal" class="modal" hidden>
+      <div class="modal-backdrop" data-modal-dismiss></div>
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-puppy-modal-title">
+        <h2 id="delete-puppy-modal-title">Delete puppy?</h2>
+        <p>Are you sure you want to delete <%= puppy.name %>? This cannot be undone.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="delete-puppy-cancel">Cancel</button>
+          <button type="button" class="btn-danger" id="delete-puppy-confirm">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var form = document.getElementById("delete-puppy-form");
+        var modal = document.getElementById("delete-puppy-modal");
+        var cancelButton = document.getElementById("delete-puppy-cancel");
+        var confirmButton = document.getElementById("delete-puppy-confirm");
+        var confirmed = false;
+
+        if (!form || !modal) return;
+
+        function openModal() {
+          modal.hidden = false;
+          confirmButton.focus();
+        }
+
+        function closeModal() {
+          modal.hidden = true;
+        }
+
+        form.addEventListener("submit", function (event) {
+          if (confirmed) return;
+          event.preventDefault();
+          openModal();
+        });
+
+        cancelButton.addEventListener("click", closeModal);
+        modal.querySelector("[data-modal-dismiss]").addEventListener("click", closeModal);
+
+        confirmButton.addEventListener("click", function () {
+          confirmed = true;
+          closeModal();
+          form.submit();
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && !modal.hidden) closeModal();
+        });
+      })();
+    </script>
   </body>
 </html>

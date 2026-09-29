@@ -78,6 +78,18 @@ describe('Puppy CRUD', () => {
     expect(showResponse.text).toContain('Puppy was successfully updated.');
   });
 
+  it('show page includes a delete confirmation modal', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Confirm Me' });
+
+    const response = await request(app).get('/puppies/1');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('id="delete-puppy-modal"');
+    expect(response.text).toContain('id="delete-puppy-cancel"');
+    expect(response.text).toContain('id="delete-puppy-confirm"');
+    expect(response.text).toContain('Are you sure you want to delete Confirm Me?');
+    expect(response.text).toContain('event.preventDefault()');
+  });
+
   it('delete decreases puppy count and redirects correctly', async () => {
     await request(app).post('/puppies').type('form').send({ name: 'To Delete' });
 
