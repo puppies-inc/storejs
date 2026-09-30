@@ -34,16 +34,19 @@ describe('Puppy CRUD', () => {
     const createResponse = await request(app)
       .post('/puppies')
       .type('form')
-      .send({ name: 'Buddy' });
+      .send({ name: 'Buddy', color: 'Brown' });
 
     expect(createResponse.status).toBe(302);
     expect(createResponse.headers.location).toBe('/puppies/1');
 
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Puppy was successfully created.');
+    expect(showResponse.text).toContain('Name: Buddy');
+    expect(showResponse.text).toContain('Color: Brown');
 
     const indexResponse = await request(app).get('/puppies');
     expect(indexResponse.text).toContain('Name: Buddy');
+    expect(indexResponse.text).toContain('🎨 Brown');
   });
 
   it('show page loads', async () => {
@@ -63,18 +66,19 @@ describe('Puppy CRUD', () => {
   });
 
   it('update persists change and redirects correctly', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
+    await request(app).post('/puppies').type('form').send({ name: 'Old Name', color: 'White' });
 
     const updateResponse = await request(app)
       .post('/puppies/1')
       .type('form')
-      .send({ name: 'New Name' });
+      .send({ name: 'New Name', color: 'Black' });
 
     expect(updateResponse.status).toBe(302);
     expect(updateResponse.headers.location).toBe('/puppies/1');
 
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Name: New Name');
+    expect(showResponse.text).toContain('Color: Black');
     expect(showResponse.text).toContain('Puppy was successfully updated.');
   });
 
