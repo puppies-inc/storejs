@@ -2,6 +2,8 @@
 
 Minimal Node.js CRUD demo for `Puppy` using Express + EJS.
 
+Each puppy now has a `species` (Dog, Cat, Rabbit, Hamster, Bird, Fish, Reptile, or Other), so the store can track more than just dogs.
+
 ## Local run
 
 ```bash

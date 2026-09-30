@@ -9,6 +9,32 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: false }));
 
+const ANIMAL_SPECIES = ['Dog', 'Cat', 'Rabbit', 'Hamster', 'Bird', 'Fish', 'Reptile', 'Other'];
+const DEFAULT_SPECIES = 'Dog';
+
+const SPECIES_EMOJI = {
+  Dog: '🐶',
+  Cat: '🐱',
+  Rabbit: '🐰',
+  Hamster: '🐹',
+  Bird: '🐦',
+  Fish: '🐠',
+  Reptile: '🦎',
+  Other: '🐾'
+};
+
+function speciesEmoji(species) {
+  return SPECIES_EMOJI[species] || SPECIES_EMOJI.Other;
+}
+
+function normalizeSpecies(species) {
+  const trimmed = (species || '').trim();
+  return ANIMAL_SPECIES.includes(trimmed) ? trimmed : DEFAULT_SPECIES;
+}
+
+app.locals.animalSpecies = ANIMAL_SPECIES;
+app.locals.speciesEmoji = speciesEmoji;
+
 let puppies = [];
 let nextId = 1;
 
@@ -39,22 +65,24 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/puppies/new', (req, res) => {
-  res.render('puppies/new', { puppy: { name: '' }, errors: [] });
+  res.render('puppies/new', { puppy: { name: '', species: DEFAULT_SPECIES }, errors: [] });
 });
 
 app.post('/puppies', (req, res) => {
   const now = new Date();
+  const species = normalizeSpecies(req.body.species);
   const puppy = {
     id: nextId,
     name: req.body.name || '',
+    species,
     created_at: now,
     updated_at: now
   };
 
   nextId += 1;
   puppies.push(puppy);
-  puppiesCreated.add(1);
-  puppiesTotal.add(1);
+  puppiesCreated.add(1, { species });
+  puppiesTotal.add(1, { species });
 
   setNotice(req, 'Puppy was successfully created.');
   res.redirect(`/puppies/${puppy.id}`);
@@ -77,6 +105,7 @@ app.post('/puppies/:id', (req, res, next) => {
   if (!puppy) return next();
 
   puppy.name = req.body.name || '';
+  puppy.species = normalizeSpecies(req.body.species);
   puppy.updated_at = new Date();
 
   setNotice(req, 'Puppy was successfully updated.');
@@ -89,8 +118,8 @@ app.post('/puppies/:id/delete', (req, res, next) => {
   if (!puppy) return next();
 
   puppies = puppies.filter((item) => item.id !== id);
-  puppiesDeleted.add(1);
-  puppiesTotal.add(-1);
+  puppiesDeleted.add(1, { species: puppy.species });
+  puppiesTotal.add(-1, { species: puppy.species });
 
   setNotice(req, 'Puppy was successfully deleted.');
   res.redirect('/puppies');
