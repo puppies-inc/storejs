@@ -9,7 +9,7 @@ The app should be intentionally simple, readable, and easy to demo.
 ## Product Scope
 
 - Single domain entity: `Puppy`
-- Single user-facing attribute: `name`
+- User-facing attributes: `name`, `breed`
 - No additional business entities
 
 ## Out of Scope
@@ -39,11 +39,12 @@ The app should be intentionally simple, readable, and easy to demo.
 `Puppy` fields:
 - `id` (primary key)
 - `name` (string)
+- `breed` (string)
 - timestamps if easy (`created_at`, `updated_at`)
 
 Validation requirement:
 - Keep it lightweight.
-- `name` may be optional for demo simplicity (acceptable to persist empty/missing name).
+- `name` and `breed` may be optional for demo simplicity (acceptable to persist empty/missing values).
 
 ### 3. HTML Pages
 
@@ -52,6 +53,7 @@ Validation requirement:
 - List all puppies
 - For each puppy:
   - show `Name: <value>`
+  - show `Breed: <value>` when present
   - show link to puppy detail page
 - Show `New puppy` action
 
@@ -59,11 +61,13 @@ Validation requirement:
 - Heading: `New puppy`
 - Form with:
   - label/input for `name`
+  - label/input for `breed`
   - submit action
 - Link back to puppies index
 
 #### Show (`/puppies/:id`)
 - Display puppy name
+- Display puppy breed
 - Actions:
   - edit
   - delete
