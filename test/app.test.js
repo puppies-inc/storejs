@@ -62,6 +62,38 @@ describe('Puppy CRUD', () => {
     expect(response.text).toContain('Editing puppy');
   });
 
+  it('edit page pre-fills the name input with the puppy current name', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Luna' });
+
+    const response = await request(app).get('/puppies/1/edit');
+    expect(response.status).toBe(200);
+    expect(response.text).toMatch(/<input[^>]*name="name"[^>]*value="Luna"/);
+  });
+
+  it('edit page pre-fills the input with the latest name after an update', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Luna' });
+    await request(app).post('/puppies/1').type('form').send({ name: 'Luna Jr.' });
+
+    const response = await request(app).get('/puppies/1/edit');
+    expect(response.status).toBe(200);
+    expect(response.text).toMatch(/<input[^>]*name="name"[^>]*value="Luna Jr\."/);
+    expect(response.text).not.toMatch(/value="Luna"/);
+  });
+
+  it('edit page escapes special characters in the pre-filled name', async () => {
+    await request(app)
+      .post('/puppies')
+      .type('form')
+      .send({ name: 'Rex "the Dog" & Friends' });
+
+    const response = await request(app).get('/puppies/1/edit');
+    expect(response.status).toBe(200);
+    expect(response.text).toMatch(
+      /<input[^>]*name="name"[^>]*value="Rex &#34;the Dog&#34; &amp; Friends"/
+    );
+    expect(response.text).not.toContain('value="Rex "the Dog" & Friends"');
+  });
+
   it('update persists change and redirects correctly', async () => {
     await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
 
