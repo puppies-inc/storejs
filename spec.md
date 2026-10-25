@@ -9,7 +9,7 @@ The app should be intentionally simple, readable, and easy to demo.
 ## Product Scope
 
 - Single domain entity: `Puppy`
-- Single user-facing attribute: `name`
+- User-facing attributes: `name` and an optional `image_url` (link to a puppy photo)
 - No additional business entities
 
 ## Out of Scope
@@ -39,11 +39,13 @@ The app should be intentionally simple, readable, and easy to demo.
 `Puppy` fields:
 - `id` (primary key)
 - `name` (string)
+- `image_url` (string, optional) — link to an image of the puppy
 - timestamps if easy (`created_at`, `updated_at`)
 
 Validation requirement:
 - Keep it lightweight.
 - `name` may be optional for demo simplicity (acceptable to persist empty/missing name).
+- `image_url` is optional; when absent, a placeholder image is shown instead.
 
 ### 3. HTML Pages
 
@@ -59,11 +61,13 @@ Validation requirement:
 - Heading: `New puppy`
 - Form with:
   - label/input for `name`
+  - label/input for `image_url` (optional link to a puppy photo)
   - submit action
 - Link back to puppies index
 
 #### Show (`/puppies/:id`)
 - Display puppy name
+- Display puppy image, rendered from the stored `image_url` when present, falling back to a placeholder image otherwise
 - Actions:
   - edit
   - delete
