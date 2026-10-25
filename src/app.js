@@ -107,3 +107,8 @@ app.resetStore = () => {
 };
 
 module.exports = app;
+
+// Health check endpoint
+app.get('/healthz', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+});
