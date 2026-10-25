@@ -39,7 +39,7 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/puppies/new', (req, res) => {
-  res.render('puppies/new', { puppy: { name: '' }, errors: [] });
+  res.render('puppies/new', { puppy: { name: '', breed: '' }, errors: [] });
 });
 
 app.post('/puppies', (req, res) => {
@@ -47,6 +47,7 @@ app.post('/puppies', (req, res) => {
   const puppy = {
     id: nextId,
     name: req.body.name || '',
+    breed: req.body.breed || '',
     created_at: now,
     updated_at: now
   };
@@ -77,6 +78,7 @@ app.post('/puppies/:id', (req, res, next) => {
   if (!puppy) return next();
 
   puppy.name = req.body.name || '';
+  puppy.breed = req.body.breed || '';
   puppy.updated_at = new Date();
 
   setNotice(req, 'Puppy was successfully updated.');
