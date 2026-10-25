@@ -26,6 +26,10 @@ function findPuppy(id) {
   return puppies.find((puppy) => puppy.id === id);
 }
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.get('/', (req, res) => {
   res.redirect('/puppies');
 });
