@@ -34,24 +34,27 @@ describe('Puppy CRUD', () => {
     const createResponse = await request(app)
       .post('/puppies')
       .type('form')
-      .send({ name: 'Buddy' });
+      .send({ name: 'Buddy', breed: 'Labrador' });
 
     expect(createResponse.status).toBe(302);
     expect(createResponse.headers.location).toBe('/puppies/1');
 
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Puppy was successfully created.');
+    expect(showResponse.text).toContain('Breed: Labrador');
 
     const indexResponse = await request(app).get('/puppies');
     expect(indexResponse.text).toContain('Name: Buddy');
+    expect(indexResponse.text).toContain('Breed: Labrador');
   });
 
   it('show page loads', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Max' });
+    await request(app).post('/puppies').type('form').send({ name: 'Max', breed: 'Poodle' });
 
     const response = await request(app).get('/puppies/1');
     expect(response.status).toBe(200);
     expect(response.text).toContain('Name: Max');
+    expect(response.text).toContain('Breed: Poodle');
   });
 
   it('edit page loads', async () => {
@@ -63,18 +66,19 @@ describe('Puppy CRUD', () => {
   });
 
   it('update persists change and redirects correctly', async () => {
-    await request(app).post('/puppies').type('form').send({ name: 'Old Name' });
+    await request(app).post('/puppies').type('form').send({ name: 'Old Name', breed: 'Old Breed' });
 
     const updateResponse = await request(app)
       .post('/puppies/1')
       .type('form')
-      .send({ name: 'New Name' });
+      .send({ name: 'New Name', breed: 'New Breed' });
 
     expect(updateResponse.status).toBe(302);
     expect(updateResponse.headers.location).toBe('/puppies/1');
 
     const showResponse = await request(app).get('/puppies/1');
     expect(showResponse.text).toContain('Name: New Name');
+    expect(showResponse.text).toContain('Breed: New Breed');
     expect(showResponse.text).toContain('Puppy was successfully updated.');
   });
 
