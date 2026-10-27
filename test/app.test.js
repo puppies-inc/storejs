@@ -54,6 +54,16 @@ describe('Puppy CRUD', () => {
     expect(response.text).toContain('Name: Max');
   });
 
+  it('show page delete form asks for confirmation before submit', async () => {
+    await request(app).post('/puppies').type('form').send({ name: 'Max' });
+
+    const response = await request(app).get('/puppies/1');
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('onsubmit="return confirm(\'Delete this puppy?\')"');
+    expect(response.text).toContain('action="/puppies/1/delete"');
+    expect(response.text).toContain('method="post"');
+  });
+
   it('edit page loads', async () => {
     await request(app).post('/puppies').type('form').send({ name: 'Luna' });
 
