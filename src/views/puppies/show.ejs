@@ -26,7 +26,7 @@
       <a href="/puppies/<%= puppy.id %>/edit" class="btn">Edit</a>
     </p>
 
-    <form action="/puppies/<%= puppy.id %>/delete" method="post" style="margin-top: 24px;">
+    <form action="/puppies/<%= puppy.id %>/delete" method="post" onsubmit="return confirm('Delete this puppy?')" style="margin-top: 24px;">
       <button type="submit" class="btn-danger">Delete</button>
     </form>
   </body>
